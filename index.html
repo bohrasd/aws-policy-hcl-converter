@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS IAM Policy to Terraform HCL Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            padding-top: 50px;
+        }
+        .converter-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        .CodeMirror {
+            height: 600px;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            font-size: 12px;
+        }
+        h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        .btn {
+            margin: 0 5px;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+            z-index: 1000;
+            max-width: 350px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .notification.show {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="converter-container">
+                    <h1 class="text-center mb-4">AWS IAM Policy to Terraform HCL Converter</h1>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h3>Input AWS IAM Policy (JSON)</h3>
+                            <textarea id="inputPolicy" placeholder="Paste your AWS IAM Policy JSON here..."></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <h3>Policy Document HCL</h3>
+                            <textarea id="outputPolicyDoc" readonly placeholder="Policy Document HCL will appear here..."></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <h3>Resource HCL</h3>
+                            <textarea id="outputResource" readonly placeholder="Resource HCL will appear here..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <button id="convertBtn" class="btn btn-primary">Convert</button>
+                        <button id="copyPolicyDocBtn" class="btn btn-secondary ml-2">Copy Policy Doc</button>
+                        <button id="copyResourceBtn" class="btn btn-secondary ml-2">Copy Resource</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="notification error" id="errorNotification"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/ruby/ruby.min.js"></script>
+    <script>
+        function showError(message) {
+            const notification = document.getElementById('errorNotification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        // Initialize CodeMirror editors
+        const inputEditor = CodeMirror.fromTextArea(document.getElementById('inputPolicy'), {
+            mode: { name: "javascript", json: true },
+            theme: "monokai",
+            lineNumbers: true,
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            tabSize: 2,
+            indentWithTabs: false,
+            lineWrapping: true,
+            gutters: ["CodeMirror-linenumbers"],
+            extraKeys: {
+                "Ctrl-Space": "autocomplete"
+            }
+        });
+
+        const policyDocEditor = CodeMirror.fromTextArea(document.getElementById('outputPolicyDoc'), {
+            mode: "ruby",  // Using Ruby mode for HCL as they have similar syntax
+            theme: "monokai",
+            lineNumbers: true,
+            readOnly: true,
+            tabSize: 2,
+            indentWithTabs: false,
+            lineWrapping: true,
+            gutters: ["CodeMirror-linenumbers"]
+        });
+
+        const resourceEditor = CodeMirror.fromTextArea(document.getElementById('outputResource'), {
+            mode: "ruby",  // Using Ruby mode for HCL as they have similar syntax
+            theme: "monokai",
+            lineNumbers: true,
+            readOnly: true,
+            tabSize: 2,
+            indentWithTabs: false,
+            lineWrapping: true,
+            gutters: ["CodeMirror-linenumbers"]
+        });
+
+        // Helper functions
+        function pluralize(word) {
+            if (word === 'Resource' || word === 'Action') return word + 's';
+            return word;
+        }
+
+        function formatArrayValue(values, indentLevel = 6) {
+            const indent = ' '.repeat(indentLevel);
+            if (!Array.isArray(values)) {
+                return `["${values}"]`;
+            }
+            if (values.length === 1) {
+                return `["${values[0]}"]`;
+            }
+            return `[\n${indent}  "${values.join(`",\n${indent}  "`)}"    \n${indent}]`;
+        }
+
+        function formatHcl(input) {
+            return input.replace(/}/g, '}\n')
+                       .replace(/{/g, '{\n  ')
+                       .replace(/\n\s*\n/g, '\n');
+        }
+
+        function convertStatementToHCL(stmt, forPolicyDoc = false) {
+            const indent = forPolicyDoc ? '    ' : '        ';
+            let block = forPolicyDoc ? '  statement {\n' : '      {\n';
+            
+            // Define fields that should be treated as strings
+            const stringFields = ['Sid', 'Effect'];
+            
+            // Handle all fields except Condition and Principal
+            Object.entries(stmt).forEach(([key, value]) => {
+                if (key !== 'Condition' && key !== 'Principal' && key !== 'NotPrincipal') {
+                    const fieldName = forPolicyDoc ? pluralize(key).toLowerCase() : key;
+                    
+                    if (stringFields.includes(key)) {
+                        // Handle string fields
+                        block += `${indent}${fieldName} = "${value}"\n`;
+                    } else if (Array.isArray(value)) {
+                        // Handle array fields (Action, Resource, etc.)
+                        block += `${indent}${fieldName} = ${formatArrayValue(value, indent.length)}\n`;
+                    }
+                }
+            });
+
+            // Handle Principal/NotPrincipal specially
+            ['Principal', 'NotPrincipal'].forEach(principalType => {
+                if (stmt[principalType]) {
+                    const fieldName = forPolicyDoc ? principalType.toLowerCase() : principalType;
+                    if (typeof stmt[principalType] === 'string') {
+                        // Handle string principal
+                        block += `${indent}${fieldName} = "${stmt[principalType]}"\n`;
+                    } else {
+                        // Handle object principal (e.g., {"AWS": ["arn:aws:iam::123456789012:root"]})
+                        block += `${indent}${fieldName} = {\n`;
+                        Object.entries(stmt[principalType]).forEach(([service, ids]) => {
+                            const serviceIds = Array.isArray(ids) ? ids : [ids];
+                            block += `${indent}  ${service} = ${formatArrayValue(serviceIds, indent.length + 2)}\n`;
+                        });
+                        block += `${indent}}\n`;
+                    }
+                }
+            });
+
+            // Handle Condition separately due to its nested structure
+            if (stmt.Condition) {
+                if (forPolicyDoc) {
+                    // Policy document format
+                    for (const [operator, conditions] of Object.entries(stmt.Condition)) {
+                        for (const [key, values] of Object.entries(conditions)) {
+                            block += `${indent}condition {\n`;
+                            block += `${indent}  test     = "${operator}"\n`;
+                            block += `${indent}  variable = "${key}"\n`;
+                            block += `${indent}  values   = ${formatArrayValue(values, indent.length + 2)}\n`;
+                            block += `${indent}}\n`;
+                        }
+                    }
+                } else {
+                    // Resource format
+                    block += `${indent}Condition = {\n`;
+                    for (const [operator, conditions] of Object.entries(stmt.Condition)) {
+                        block += `${indent}  ${operator} = {\n`;
+                        for (const [key, values] of Object.entries(conditions)) {
+                            block += `${indent}    "${key}" = ${formatArrayValue(values, indent.length + 4)}\n`;
+                        }
+                        block += `${indent}  }\n`;
+                    }
+                    block += `${indent}}\n`;
+                }
+            }
+
+            block += forPolicyDoc ? '  }' : '      }';
+            return block;
+        }
+
+        function convertToHCL(policyJson) {
+            try {
+                const policy = JSON.parse(policyJson);
+                
+                if (!policy.Version) {
+                    throw new Error("Policy must include a 'Version' field");
+                }
+                
+                if (!policy.Statement || !Array.isArray(policy.Statement)) {
+                    throw new Error("Policy must include a 'Statement' array");
+                }
+
+                // Validate each statement
+                policy.Statement.forEach((stmt, index) => {
+                    if (!stmt.Effect || !['Allow', 'Deny'].includes(stmt.Effect)) {
+                        throw new Error(`Statement ${index + 1} must include a valid 'Effect' field (Allow or Deny)`);
+                    }
+                    if (!stmt.Action && !stmt.Resource && !stmt.NotAction && !stmt.NotResource) {
+                        throw new Error(`Statement ${index + 1} must include at least one of 'Action', 'NotAction', 'Resource', or 'NotResource' fields`);
+                    }
+                });
+                
+                const statements = policy.Statement;
+
+                // Generate policy document version
+                const statementBlocks = statements.map(stmt => convertStatementToHCL(stmt, true)).join('\n\n');
+                const policyDocVersion = `data "aws_iam_policy_document" "policy" {
+${statementBlocks}
+}`;
+
+                // Generate resource version
+                const resourceStatements = statements.map(stmt => convertStatementToHCL(stmt, false)).join(',\n');
+                const jsonEncodeVersion = `resource "aws_iam_policy" "policy" {
+  name        = "policy-name"
+  description = "Policy Description"
+  policy      = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [
+${resourceStatements}
+    ]
+  })
+}`;
+
+                return { policyDocVersion, jsonEncodeVersion };
+            } catch (error) {
+                return `Error converting policy: ${error.message}`;
+            }
+        }
+
+        // Auto-format JSON
+        function formatJson(input) {
+            try {
+                const parsed = JSON.parse(input);
+                return JSON.stringify(parsed, null, 2);
+            } catch {
+                return input;
+            }
+        }
+
+        document.getElementById('convertBtn').addEventListener('click', () => {
+            const result = convertToHCL(inputEditor.getValue());
+            
+            if (typeof result === 'string' && result.startsWith('Error')) {
+                showError(result.replace('Error converting policy: ', ''));
+                return;
+            }
+
+            // Format and set HCL output
+            const formattedDoc = formatHcl(result.policyDocVersion);
+            const formattedResource = formatHcl(result.jsonEncodeVersion);
+            
+            policyDocEditor.setValue(formattedDoc);
+            resourceEditor.setValue(formattedResource);
+        });
+
+        document.getElementById('copyPolicyDocBtn').addEventListener('click', () => {
+            navigator.clipboard.writeText(policyDocEditor.getValue());
+            
+            const copyBtn = document.getElementById('copyPolicyDocBtn');
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyBtn.textContent = 'Copy Policy Doc';
+            }, 2000);
+        });
+
+        document.getElementById('copyResourceBtn').addEventListener('click', () => {
+            navigator.clipboard.writeText(resourceEditor.getValue());
+            
+            const copyBtn = document.getElementById('copyResourceBtn');
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyBtn.textContent = 'Copy Resource';
+            }, 2000);
+        });
+
+        // Auto-format JSON input when pasted
+        inputEditor.on('change', (cm, change) => {
+            if (change.origin === 'paste') {
+                const formatted = formatJson(cm.getValue());
+                cm.setValue(formatted);
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
