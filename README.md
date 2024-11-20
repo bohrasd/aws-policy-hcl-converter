@@ -1,1 +1,1 @@
-# [AWS IAM Policy to Terraform HCL Converter](https://akarat.xyz/aws-policy-hcl-converter/)
+# [AWS IAM Policy to Terraform HCL Converter](https://bohrasd.github.io/aws-policy-hcl-converter/)
