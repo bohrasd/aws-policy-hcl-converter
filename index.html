@@ -13,9 +13,15 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://aws-policy-converter.com">
     <link rel="canonical" href="https://aws-policy-converter.com">
-    
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9367905215103331"
-     crossorigin="anonymous"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BB74MJTCRS"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-BB74MJTCRS');
+</script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css" rel="stylesheet">
@@ -102,7 +108,7 @@
             <div class="col-md-12">
                 <div class="converter-container">
                     <h1 class="text-center mb-4">AWS IAM Policy to Terraform HCL Converter</h1>
-                    
+
                     <div class="row">
                         <div class="col-md-4">
                             <h3>Input AWS IAM Policy (JSON)</h3>
@@ -117,7 +123,7 @@
                             <textarea id="outputResource" readonly placeholder="Resource HCL will appear here..."></textarea>
                         </div>
                     </div>
-                    
+
                     <div class="text-center mt-3">
                         <button id="convertBtn" class="btn btn-primary">Convert</button>
                         <button id="copyPolicyDocBtn" class="btn btn-secondary ml-2">Copy Policy Doc</button>
@@ -137,7 +143,7 @@
             const notification = document.getElementById('errorNotification');
             notification.textContent = message;
             notification.classList.add('show');
-            
+
             // Hide after 5 seconds
             setTimeout(() => {
                 notification.classList.remove('show');
@@ -208,15 +214,15 @@
         function convertStatementToHCL(stmt, forPolicyDoc = false) {
             const indent = forPolicyDoc ? '    ' : '        ';
             let block = forPolicyDoc ? '  statement {\n' : '      {\n';
-            
+
             // Define fields that should be treated as strings
             const stringFields = ['Sid', 'Effect'];
-            
+
             // Handle all fields except Condition and Principal
             Object.entries(stmt).forEach(([key, value]) => {
                 if (key !== 'Condition' && key !== 'Principal' && key !== 'NotPrincipal') {
                     const fieldName = forPolicyDoc ? pluralize(key).toLowerCase() : key;
-                    
+
                     if (stringFields.includes(key)) {
                         // Handle string fields
                         block += `${indent}${fieldName} = "${value}"\n`;
@@ -280,11 +286,11 @@
         function convertToHCL(policyJson) {
             try {
                 const policy = JSON.parse(policyJson);
-                
+
                 if (!policy.Version) {
                     throw new Error("Policy must include a 'Version' field");
                 }
-                
+
                 if (!policy.Statement || !Array.isArray(policy.Statement)) {
                     throw new Error("Policy must include a 'Statement' array");
                 }
@@ -298,7 +304,7 @@
                         throw new Error(`Statement ${index + 1} must include at least one of 'Action', 'NotAction', 'Resource', or 'NotResource' fields`);
                     }
                 });
-                
+
                 const statements = policy.Statement;
 
                 // Generate policy document version
@@ -338,7 +344,7 @@ ${resourceStatements}
 
         document.getElementById('convertBtn').addEventListener('click', () => {
             const result = convertToHCL(inputEditor.getValue());
-            
+
             if (typeof result === 'string' && result.startsWith('Error')) {
                 showError(result.replace('Error converting policy: ', ''));
                 return;
@@ -347,14 +353,14 @@ ${resourceStatements}
             // Format and set HCL output
             const formattedDoc = formatHcl(result.policyDocVersion);
             const formattedResource = formatHcl(result.jsonEncodeVersion);
-            
+
             policyDocEditor.setValue(formattedDoc);
             resourceEditor.setValue(formattedResource);
         });
 
         document.getElementById('copyPolicyDocBtn').addEventListener('click', () => {
             navigator.clipboard.writeText(policyDocEditor.getValue());
-            
+
             const copyBtn = document.getElementById('copyPolicyDocBtn');
             copyBtn.textContent = 'Copied!';
             setTimeout(() => {
@@ -364,7 +370,7 @@ ${resourceStatements}
 
         document.getElementById('copyResourceBtn').addEventListener('click', () => {
             navigator.clipboard.writeText(resourceEditor.getValue());
-            
+
             const copyBtn = document.getElementById('copyResourceBtn');
             copyBtn.textContent = 'Copied!';
             setTimeout(() => {
