@@ -1,18 +1,25 @@
 {
-  "name": "windsurf-project",
+  "name": "terraform-policy-converter",
   "version": "1.0.0",
-  "description": "## Overview This is a simple static site that helps you convert AWS IAM Policy JSON to Terraform HCL format.",
-  "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
+  "description": "Converts Terraform HCL syntax to standard AWS IAM policy JSON format",
+  "main": "src/converter.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
-  "keywords": [],
+  "keywords": [
+    "terraform",
+    "aws",
+    "iam",
+    "policy",
+    "converter"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "babel-jest": "^29.7.0",
     "jest": "^29.7.0"
   }
 }

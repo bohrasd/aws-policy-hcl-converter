@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terraform jsonencode IAM Policy Converter</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .editor-container {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
+        .editor-half {
+            flex: 1;
+            min-width: 0;
+        }
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            height: 400px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            resize: vertical;
+            background-color: #f8f9fa;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: #dc3545;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Terraform jsonencode IAM Policy Converter</h1>
+        <div class="editor-container">
+            <div class="editor-half">
+                <h3>Input Terraform IAM Policy</h3>
+                <textarea id="inputPolicy" placeholder="Enter your Terraform IAM policy here..."></textarea>
+            </div>
+            <div class="editor-half">
+                <h3>JSON Output</h3>
+                <textarea id="outputJson" readonly placeholder="JSON-encoded output will appear here..."></textarea>
+            </div>
+        </div>
+        <button onclick="convertPolicy()">Convert Policy</button>
+        <div id="error" class="error"></div>
+    </div>
+    <script>
+        function escapeString(str) {
+            return str.replace(/[\\"]/g, '\\$&')
+                     .replace(/\${/g, '${');  // Don't escape string interpolation
+        }
+
+        function convertHCLToJSON(hcl) {
+            // Remove comments
+            hcl = hcl.replace(/#.*$/gm, '').replace(/\/\/.*$/gm, '');
+            
+            // Add quotes around unquoted keys
+            hcl = hcl.replace(/([{,]\s*)([a-zA-Z0-9_-]+)\s*=/g, '$1"$2" =');
+            
+            // Convert = to :
+            hcl = hcl.replace(/\s*=\s*/g, ': ');
+            
+            // Add quotes around unquoted string values
+            hcl = hcl.replace(/:\s*([a-zA-Z0-9_\-.*:\/]+)(\s*[,}\]])/g, ':"$1"$2');
+            
+            // Fix boolean and null values
+            hcl = hcl.replace(/:\s*"(true|false|null)"/g, ':$1');
+            
+            // Fix numbers
+            hcl = hcl.replace(/:\s*"(\d+)"(?!\d*")/g, ':$1');
+            
+            // Add missing commas between properties
+            hcl = hcl.replace(/}(\s*[}\]])/g, '},$1')  // Add comma after closing brace
+                     .replace(/](\s*[}\]])/g, '],$1')   // Add comma after closing bracket
+                     .replace(/([^,{[\s])\s*\n\s*"[^"]+"\s*:/g, '$1,\n"') // Add comma between properties
+                     .replace(/([^,{[\s])\s*\n\s*([a-zA-Z0-9_-]+)\s*:/g, '$1,\n"$2":'); // Add comma between unquoted keys
+            
+            // Remove trailing commas
+            hcl = hcl.replace(/,(\s*[}\]])/g, '$1');
+            
+            // Escape special characters in strings, but preserve interpolations
+            hcl = hcl.replace(/"([^"]*?)"/g, (match, p1) => {
+                return `"${escapeString(p1)}"`;
+            });
+            
+            try {
+                // Parse and re-stringify to ensure valid JSON
+                return JSON.stringify(JSON.parse(hcl), null, 2);
+            } catch (e) {
+                throw new Error(`Invalid JSON after conversion: ${e.message}\nConverted HCL: ${hcl}`);
+            }
+        }
+
+        function convertPolicy() {
+            const inputEl = document.getElementById('inputPolicy');
+            const outputEl = document.getElementById('outputJson');
+            const errorEl = document.getElementById('error');
+            
+            try {
+                errorEl.textContent = '';
+                const jsonStr = convertHCLToJSON(inputEl.value);
+                outputEl.value = jsonStr;
+            } catch (error) {
+                errorEl.textContent = 'Error: ' + error.message;
+                outputEl.value = '';
+            }
+        }
+
+        // Add example policy on page load
+        window.onload = function() {
+            document.getElementById('inputPolicy').value = `{
+    Version = "2012-10-17"
+    Statement = [
+        {
+            Effect = "Allow"
+            Action = [
+                "s3:GetObject",
+                "s3:ListBucket"
+            ]
+            Resource = [
+                "arn:aws:s3:::example-bucket",
+                "arn:aws:s3:::example-bucket/*"
+            ]
+        }
+    ]
+}`;
+        };
+    </script>
+</body>
+</html>

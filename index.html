@@ -112,7 +112,22 @@
                     <div class="row">
                         <div class="col-md-4">
                             <h3>Input AWS IAM Policy (JSON)</h3>
-                            <textarea id="inputPolicy" placeholder="Paste your AWS IAM Policy JSON here..."></textarea>
+                            <textarea id="inputPolicy" placeholder="Paste your AWS IAM Policy JSON here...">{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::example-bucket",
+                "arn:aws:s3:::example-bucket/*"
+            ]
+        }
+    ]
+}</textarea>
                         </div>
                         <div class="col-md-4">
                             <h3>Policy Document HCL</h3>
