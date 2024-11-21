@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON to Jsonnet Converter | Online Tool for Kubernetes Configuration</title>
+    <meta name="description" content="Free online tool to convert JSON to Jsonnet format. Perfect for Kubernetes configuration management and infrastructure as code. Convert your JSON configurations to reusable Jsonnet templates.">
+    <meta name="keywords" content="JSON to Jsonnet, Jsonnet Converter, Kubernetes Configuration, Infrastructure as Code, DevOps Tools, Configuration Management, JSON Templates, Jsonnet Generator">
+    <meta name="author" content="JSON to Jsonnet Converter">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#ffffff">
+    <meta property="og:title" content="JSON to Jsonnet Converter - Online Tool">
+    <meta property="og:description" content="Convert JSON to Jsonnet format instantly. Free online tool for DevOps engineers and Kubernetes users.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://akarat-tools.xyz/json-to-jsonnet">
+    <meta property="og:image" content="https://akarat-tools.xyz/og-image.png">
+    <meta property="og:site_name" content="Akarat Tools">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="JSON to Jsonnet Converter - Online Tool">
+    <meta name="twitter:description" content="Convert JSON to Jsonnet format instantly. Free online tool for DevOps engineers and Kubernetes users.">
+    <link rel="canonical" href="https://akarat-tools.xyz/json-to-jsonnet">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-header {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 2rem;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-brand {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .nav-link:hover {
+            color: #333;
+            background-color: #e9ecef;
+        }
+        .nav-link.active {
+            color: #007bff;
+            font-weight: 500;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .converter-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+        .input-section, .output-section {
+            display: flex;
+            flex-direction: column;
+            min-width: 0; /* Prevents flex items from overflowing */
+        }
+        textarea {
+            width: 100%;
+            height: 400px;
+            margin: 10px 0;
+            padding: 10px;
+            font-family: monospace;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            box-sizing: border-box; /* Include padding in width calculation */
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .button-container {
+            text-align: center;
+            margin: 20px 0;
+            grid-column: span 2;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        button {
+            background-color: #007AFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+            white-space: nowrap;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: #dc3545;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .copy-button {
+            background-color: #28a745;
+        }
+        .copy-button:hover {
+            background-color: #218838;
+        }
+        
+        /* Responsive design improvements */
+        @media (max-width: 768px) {
+            .converter-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .button-container {
+                grid-column: 1;
+                flex-direction: column;
+            }
+            button {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="nav-header">
+        <nav class="nav-container">
+            <a href="https://akarat-tools.xyz" class="nav-brand">Akarat Tools</a>
+            <div class="nav-links">
+                <a href="/aws-policy-converter" class="nav-link">AWS Policy Converter</a>
+                <a href="/json-to-jsonnet" class="nav-link active">JSON to Jsonnet</a>
+                <a href="/hcl-to-json" class="nav-link">HCL to JSON</a>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>JSON to Jsonnet Converter</h1>
+        <div class="converter-container">
+            <div class="input-section">
+                <h3>JSON Input</h3>
+                <textarea id="jsonInput" placeholder="Paste your JSON here..."></textarea>
+                <div id="inputError" class="error"></div>
+            </div>
+            <div class="output-section">
+                <h3>Jsonnet Output</h3>
+                <textarea id="jsonnetOutput" readonly></textarea>
+            </div>
+            <div class="button-container">
+                <button onclick="convertToJsonnet()">Convert to Jsonnet</button>
+                <button onclick="convertToJsonnetWithParams()">Convert with Parameters</button>
+                <button class="copy-button" onclick="copyToClipboard()">Copy Output</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function convertToJsonnet() {
+            const jsonInput = document.getElementById('jsonInput').value;
+            const errorElement = document.getElementById('inputError');
+            const outputElement = document.getElementById('jsonnetOutput');
+            
+            try {
+                // Parse JSON to validate it
+                const parsedJson = JSON.parse(jsonInput);
+                
+                // Convert to Jsonnet format
+                const jsonnetOutput = convertJsonToJsonnet(parsedJson);
+                
+                outputElement.value = jsonnetOutput;
+                errorElement.textContent = '';
+            } catch (error) {
+                errorElement.textContent = 'Invalid JSON: ' + error.message;
+                outputElement.value = '';
+            }
+        }
+
+        function convertJsonToJsonnet(obj, indent = 0) {
+            if (obj === null) return 'null';
+            
+            const spaces = '  '.repeat(indent);
+            
+            switch (typeof obj) {
+                case 'string':
+                    return `'${obj.replace(/'/g, "\\'")}'`;
+                case 'number':
+                case 'boolean':
+                    return obj.toString();
+                case 'object':
+                    if (Array.isArray(obj)) {
+                        if (obj.length === 0) return '[]';
+                        const items = obj.map(item => convertJsonToJsonnet(item, indent + 1));
+                        return `[\n${spaces}  ${items.join(',\n' + spaces + '  ')}\n${spaces}]`;
+                    } else {
+                        const entries = Object.entries(obj);
+                        if (entries.length === 0) return '{}';
+                        const props = entries.map(([key, value]) => {
+                            const jsonnetKey = /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key) ? key : `'${key}'`;
+                            return `${jsonnetKey}: ${convertJsonToJsonnet(value, indent + 1)}`;
+                        });
+                        return `{\n${spaces}  ${props.join(',\n' + spaces + '  ')}\n${spaces}}`;
+                    }
+            }
+        }
+
+        function findRepeatedStrings(obj) {
+            const stringCounts = new Map();
+            const stringPaths = new Map();
+
+            function traverse(current, path = []) {
+                if (typeof current === 'string') {
+                    const count = stringCounts.get(current) || 0;
+                    stringCounts.set(current, count + 1);
+                    
+                    const paths = stringPaths.get(current) || [];
+                    paths.push([...path]);
+                    stringPaths.set(current, paths);
+                } else if (Array.isArray(current)) {
+                    current.forEach((item, index) => {
+                        traverse(item, [...path, index]);
+                    });
+                } else if (current && typeof current === 'object') {
+                    Object.entries(current).forEach(([key, value]) => {
+                        traverse(value, [...path, key]);
+                    });
+                }
+            }
+
+            traverse(obj);
+            return { stringCounts, stringPaths };
+        }
+
+        function parameterizeJson(obj) {
+            const { stringCounts, stringPaths } = findRepeatedStrings(obj);
+            const params = {};
+            const paramNames = new Map();
+            let paramCounter = 1;
+
+            // Find strings that appear more than once
+            for (const [str, count] of stringCounts.entries()) {
+                if (count > 1) {
+                    const paramName = `param${paramCounter}`;
+                    params[paramName] = str;
+                    paramNames.set(str, paramName);
+                    paramCounter++;
+                }
+            }
+
+            // Create a deep copy of the object and replace repeated strings with parameters
+            function replaceStrings(current) {
+                if (typeof current === 'string') {
+                    return paramNames.has(current) ? `$${paramNames.get(current)}` : current;
+                }
+                if (Array.isArray(current)) {
+                    return current.map(replaceStrings);
+                }
+                if (current && typeof current === 'object') {
+                    const newObj = {};
+                    for (const [key, value] of Object.entries(current)) {
+                        newObj[key] = replaceStrings(value);
+                    }
+                    return newObj;
+                }
+                return current;
+            }
+
+            const parameterized = replaceStrings(obj);
+            return { params, parameterized };
+        }
+
+        function convertToJsonnetWithParams() {
+            const jsonInput = document.getElementById('jsonInput').value;
+            const errorElement = document.getElementById('inputError');
+            const outputElement = document.getElementById('jsonnetOutput');
+            
+            try {
+                const parsedJson = JSON.parse(jsonInput);
+                const { params, parameterized } = parameterizeJson(parsedJson);
+                
+                // Generate Jsonnet with parameters
+                let jsonnetOutput = 'local ';
+                jsonnetOutput += Object.entries(params)
+                    .map(([param, value]) => `${param} = '${value}'`)
+                    .join(';\nlocal ');
+                
+                if (Object.keys(params).length > 0) {
+                    jsonnetOutput += ';\n\n';
+                }
+                
+                jsonnetOutput += convertJsonToJsonnet(parameterized);
+                
+                outputElement.value = jsonnetOutput;
+                errorElement.textContent = '';
+            } catch (error) {
+                errorElement.textContent = 'Invalid JSON: ' + error.message;
+                outputElement.value = '';
+            }
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('jsonnetOutput');
+            output.select();
+            document.execCommand('copy');
+            
+            const copyButton = document.querySelector('.copy-button');
+            const originalText = copyButton.textContent;
+            copyButton.textContent = 'Copied!';
+            setTimeout(() => {
+                copyButton.textContent = originalText;
+            }, 2000);
+        }
+
+        // Add example JSON on page load
+        window.onload = function() {
+            const exampleJson = {
+                "name": "example",
+                "version": 1,
+                "data": {
+                    "items": [1, 2, 3],
+                    "enabled": true,
+                    "description": "Sample JSON"
+                }
+            };
+            document.getElementById('jsonInput').value = JSON.stringify(exampleJson, null, 2);
+        };
+    </script>
+</body>
+</html>
