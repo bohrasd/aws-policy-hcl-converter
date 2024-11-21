@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes YAML Navigator | Online K8s YAML Parser and Viewer</title>
+    <meta name="description" content="Free online Kubernetes YAML navigator and parser. Easily browse, search, and analyze your K8s YAML files. Perfect for DevOps engineers and Kubernetes administrators.">
+    <meta name="keywords" content="Kubernetes, YAML Navigator, K8s, YAML Parser, Kubernetes Configuration, DevOps Tools, K8s Resources, YAML Viewer, Kubernetes YAML">
+    <meta name="author" content="Akarat Tools">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#326ce5">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://akarat-tools.xyz/yaml-navigator">
+    <meta property="og:title" content="Kubernetes YAML Navigator - Online Tool">
+    <meta property="og:description" content="Browse and analyze Kubernetes YAML files with ease. Free online tool for DevOps engineers and K8s administrators.">
+    <meta property="og:image" content="https://akarat-tools.xyz/og-image.png">
+    <meta property="og:site_name" content="Akarat Tools">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Kubernetes YAML Navigator - Online Tool">
+    <meta name="twitter:description" content="Browse and analyze Kubernetes YAML files with ease. Free online tool for DevOps engineers and K8s administrators.">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://akarat-tools.xyz/yaml-navigator">
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #326ce5;
+            --background-color: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+        }
+
+        .nav-header {
+            background-color: white;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-brand:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #333;
+            background-color: #e9ecef;
+        }
+
+        .nav-link.active {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            grid-column: span 2;
+        }
+
+        .description {
+            grid-column: span 2;
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 8px 0 0 0;
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .feature-icon {
+            color: var(--primary-color);
+        }
+
+        .input-section {
+            grid-column: span 2;
+            margin-bottom: 15px;
+        }
+
+        .url-input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .url-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(50, 108, 229, 0.1);
+        }
+
+        .fetch-button {
+            white-space: nowrap;
+            background-color: var(--primary-color);
+        }
+
+        .loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        #fetchStatus {
+            font-size: 14px;
+            margin-top: 5px;
+            min-height: 20px;
+        }
+
+        .status-error {
+            color: #dc3545;
+        }
+
+        .status-success {
+            color: #28a745;
+        }
+
+        #yamlInput {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: monospace;
+            resize: vertical;
+        }
+
+        .navigation {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 15px;
+            overflow-y: auto;
+            height: calc(100vh - 340px);
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .search-box::after {
+            content: "Hold Shift to select multiple resources";
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(50, 108, 229, 0.1);
+        }
+
+        .no-results {
+            color: #666;
+            padding: 10px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .resource-viewer {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 15px;
+            overflow-y: auto;
+            height: calc(100vh - 340px);
+        }
+
+        .resource-link {
+            display: block;
+            padding: 8px 12px;
+            margin: 4px 0;
+            border-radius: 4px;
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .resource-link:hover {
+            background-color: #e9ecef;
+        }
+
+        .resource-link.selected {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .resource-link.selected .resource-meta {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .resource-meta {
+            color: #666;
+            font-size: 0.9em;
+            margin-left: 8px;
+        }
+
+        .resource-group {
+            margin-bottom: 15px;
+        }
+
+        .resource-group-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+            padding: 5px 12px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        #resourceContent {
+            white-space: pre-wrap;
+            font-family: monospace;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .error {
+            color: #dc3545;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #dc3545;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+
+        .button-container {
+            margin: 10px 0;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .copy-button {
+            background-color: #28a745;
+            float: right;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .navigation, .resource-viewer {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="nav-header">
+        <nav class="nav-container">
+            <a href="https://akarat-tools.xyz" class="nav-brand">Akarat Tools</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">AWS Policy Converter</a>
+                <a href="json-to-jsonnet.html" class="nav-link">JSON to Jsonnet</a>
+                <a href="hcl-to-json.html" class="nav-link">HCL to JSON</a>
+                <a href="yaml-navigator.html" class="nav-link active">YAML Navigator</a>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>Kubernetes YAML Navigator</h1>
+        <div class="description">
+            Navigate, filter, and manage SUPER GIANT Kubernetes YAML files with ease.
+        </div>
+        <div class="input-section">
+            <div class="url-input-container">
+                <input type="url" 
+                       id="yamlUrl" 
+                       class="url-input" 
+                       placeholder="Enter YAML URL (e.g., raw GitHub URL)">
+                <button onclick="fetchYaml()" class="fetch-button">Fetch YAML</button>
+                <button onclick="clearAll()">Clear All</button>
+            </div>
+            <div id="fetchStatus"></div>
+            <textarea id="yamlInput" 
+                     placeholder="Paste your Kubernetes YAML here..."
+                     oninput="handleManualInput()"></textarea>
+            <div id="error" class="error" style="display: none;"></div>
+        </div>
+
+        <div class="navigation" id="resourceList">
+            <div class="search-box">
+                <input type="text" 
+                       class="search-input" 
+                       id="resourceSearch" 
+                       placeholder="Search apiVersion/kind..."
+                       oninput="filterResources(this.value)">
+            </div>
+            <div id="resourceGroups">
+                <!-- Resource groups will be dynamically added here -->
+            </div>
+        </div>
+
+        <div class="resource-viewer">
+            <div class="button-container">
+                <button class="copy-button" onclick="copyResourceToClipboard()">Copy</button>
+            </div>
+            <div id="resourceContent">
+                Select resources from the left panel to view their contents.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let resources = [];
+        let resourceGroups = {};
+        let isFetching = false;
+        let selectedResources = new Set();
+
+        async function fetchYaml() {
+            const urlInput = document.getElementById('yamlUrl');
+            const yamlInput = document.getElementById('yamlInput');
+            const fetchButton = document.querySelector('.fetch-button');
+            const statusDiv = document.getElementById('fetchStatus');
+            const url = urlInput.value.trim();
+
+            if (!url) {
+                statusDiv.textContent = 'Please enter a URL';
+                statusDiv.className = 'status-error';
+                return;
+            }
+
+            if (isFetching) return;
+            isFetching = true;
+
+            // Update UI to show loading state
+            fetchButton.classList.add('loading');
+            fetchButton.disabled = true;
+            statusDiv.textContent = 'Fetching YAML...';
+            statusDiv.className = '';
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const yaml = await response.text();
+                
+                // Update textarea and parse YAML
+                yamlInput.value = yaml;
+                parseYAML();
+                
+                // Show success message
+                statusDiv.textContent = 'YAML fetched successfully!';
+                statusDiv.className = 'status-success';
+                
+                // Clear success message after 3 seconds
+                setTimeout(() => {
+                    statusDiv.textContent = '';
+                }, 3000);
+
+            } catch (error) {
+                statusDiv.textContent = `Error fetching YAML: ${error.message}`;
+                statusDiv.className = 'status-error';
+            } finally {
+                fetchButton.classList.remove('loading');
+                fetchButton.disabled = false;
+                isFetching = false;
+            }
+        }
+
+        function handleManualInput() {
+            // Clear URL input when manual input is detected
+            const urlInput = document.getElementById('yamlUrl');
+            const statusDiv = document.getElementById('fetchStatus');
+            urlInput.value = '';
+            statusDiv.textContent = '';
+            
+            // Parse the YAML
+            parseYAML();
+        }
+
+        function parseYAML() {
+            const input = document.getElementById('yamlInput').value;
+            const errorElement = document.getElementById('error');
+            
+            try {
+                // Split the YAML into documents and parse each one
+                resources = input.split('---\n')
+                    .filter(doc => doc.trim())
+                    .map(doc => jsyaml.load(doc))
+                    .filter(doc => doc && doc.apiVersion && doc.kind && doc.metadata?.name);
+
+                // Sort resources by apiVersion, kind, and name
+                resources.sort((a, b) => {
+                    const aKey = `${a.apiVersion}/${a.kind}/${a.metadata.name}`;
+                    const bKey = `${b.apiVersion}/${b.kind}/${b.metadata.name}`;
+                    return aKey.localeCompare(bKey);
+                });
+
+                updateResourceList();
+                errorElement.style.display = 'none';
+            } catch (error) {
+                errorElement.textContent = `Error parsing YAML: ${error.message}`;
+                errorElement.style.display = 'block';
+                resources = [];
+                updateResourceList();
+            }
+        }
+
+        function updateResourceList() {
+            // Group resources by apiVersion/kind
+            resourceGroups = resources.reduce((acc, resource) => {
+                const key = `${resource.apiVersion}/${resource.kind}`;
+                if (!acc[key]) acc[key] = [];
+                acc[key].push(resource);
+                return acc;
+            }, {});
+
+            // Initial unfiltered view
+            filterResources('');
+        }
+
+        function filterResources(searchTerm) {
+            const groupsContainer = document.getElementById('resourceGroups');
+            groupsContainer.innerHTML = '';
+            
+            searchTerm = searchTerm.toLowerCase();
+            
+            // Filter groups based on search term
+            const filteredGroups = Object.entries(resourceGroups).filter(([group]) => 
+                group.toLowerCase().includes(searchTerm)
+            );
+
+            if (filteredGroups.length === 0) {
+                const noResults = document.createElement('div');
+                noResults.className = 'no-results';
+                noResults.textContent = 'No matching resources found';
+                groupsContainer.appendChild(noResults);
+                return;
+            }
+
+            // Create sections for filtered groups
+            filteredGroups.forEach(([group, groupResources]) => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'resource-group';
+
+                const title = document.createElement('div');
+                title.className = 'resource-group-title';
+                title.textContent = group;
+                groupDiv.appendChild(title);
+
+                groupResources.forEach(resource => {
+                    const link = document.createElement('a');
+                    link.className = 'resource-link';
+                    if (selectedResources.has(resource)) {
+                        link.classList.add('selected');
+                    }
+                    link.textContent = resource.metadata.name;
+                    
+                    if (resource.metadata.namespace) {
+                        const meta = document.createElement('span');
+                        meta.className = 'resource-meta';
+                        meta.textContent = `(${resource.metadata.namespace})`;
+                        link.appendChild(meta);
+                    }
+
+                    link.onclick = (event) => showResource(resource, event.currentTarget, event);
+                    groupDiv.appendChild(link);
+                });
+
+                groupsContainer.appendChild(groupDiv);
+            });
+        }
+
+        function showResource(resource, element, event) {
+            if (!event.shiftKey) {
+                // Single select mode - clear other selections
+                selectedResources.clear();
+                document.querySelectorAll('.resource-link.selected').forEach(el => {
+                    if (el !== element) {
+                        el.classList.remove('selected');
+                    }
+                });
+            }
+
+            // Toggle selection
+            if (element.classList.contains('selected')) {
+                element.classList.remove('selected');
+                selectedResources.delete(resource);
+            } else {
+                element.classList.add('selected');
+                selectedResources.add(resource);
+            }
+
+            // Update content view
+            const content = document.getElementById('resourceContent');
+            if (selectedResources.size === 0) {
+                content.textContent = 'Select resources from the left panel to view their contents.';
+                return;
+            }
+
+            // Convert selected resources to YAML and join with separator
+            const yamlContent = Array.from(selectedResources)
+                .map(res => jsyaml.dump(res))
+                .join('\n---\n');
+            content.innerHTML = `<pre>${yamlContent}</pre>`;
+        }
+
+        function copyResourceToClipboard() {
+            if (selectedResources.size === 0) return;
+            
+            const yamlContent = Array.from(selectedResources)
+                .map(res => jsyaml.dump(res))
+                .join('\n---\n');
+
+            navigator.clipboard.writeText(yamlContent).then(() => {
+                const copyButton = document.querySelector('.copy-button');
+                const originalText = copyButton.textContent;
+                copyButton.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyButton.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        function clearAll() {
+            document.getElementById('yamlInput').value = '';
+            document.getElementById('resourceGroups').innerHTML = '';
+            document.getElementById('resourceContent').textContent = 'Select resources from the left panel to view their contents.';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('yamlUrl').value = '';
+            document.getElementById('fetchStatus').textContent = '';
+            resources = [];
+            selectedResources.clear();
+            resourceGroups = {};
+        }
+
+        // Add example YAML on page load
+        window.onload = function() {
+            const exampleYaml = `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: default
+spec:
+  selector:
+    app: nginx
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP`;
+            
+            document.getElementById('yamlInput').value = exampleYaml;
+            parseYAML();
+        };
+    </script>
+</body>
+</html>

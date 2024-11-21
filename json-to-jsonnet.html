@@ -77,6 +77,11 @@
             text-align: center;
             margin-bottom: 30px;
         }
+        .description {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #666;
+        }
         .converter-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -161,11 +166,15 @@
                 <a href="index.html" class="nav-link">AWS Policy Converter</a>
                 <a href="json-to-jsonnet.html" class="nav-link active">JSON to Jsonnet</a>
                 <a href="hcl-to-json.html" class="nav-link">HCL to JSON</a>
+                <a href="yaml-navigator.html" class="nav-link">YAML Navigator</a>
             </div>
         </nav>
     </header>
     <div class="container">
         <h1>JSON to Jsonnet Converter</h1>
+        <div class="description">
+            Transform JSON configurations into concise Jsonnet format. Ideal for Kubernetes, Grafana, and other JSON-based configurations.
+        </div>
         <div class="converter-container">
             <div class="input-section">
                 <h3>JSON Input</h3>
