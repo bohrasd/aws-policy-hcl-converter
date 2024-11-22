@@ -9,7 +9,7 @@
     <meta name="author" content="Akarat Tools">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#326ce5">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://akarat-tools.xyz/yaml-navigator">
@@ -17,16 +17,25 @@
     <meta property="og:description" content="Browse and analyze Kubernetes YAML files with ease. Free online tool for DevOps engineers and K8s administrators.">
     <meta property="og:image" content="https://akarat-tools.xyz/og-image.png">
     <meta property="og:site_name" content="Akarat Tools">
-    
+
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Kubernetes YAML Navigator - Online Tool">
     <meta name="twitter:description" content="Browse and analyze Kubernetes YAML files with ease. Free online tool for DevOps engineers and K8s administrators.">
-    
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6PDQBCN90Z"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-6PDQBCN90Z');
+    </script>
     <!-- Canonical URL -->
     <link rel="canonical" href="https://akarat-tools.xyz/yaml-navigator">
     <link rel="icon" type="image/png" href="favicon.png">
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <style>
         :root {
@@ -366,15 +375,15 @@
         </div>
         <div class="input-section">
             <div class="url-input-container">
-                <input type="url" 
-                       id="yamlUrl" 
-                       class="url-input" 
+                <input type="url"
+                       id="yamlUrl"
+                       class="url-input"
                        placeholder="Enter YAML URL (e.g., raw GitHub URL)">
                 <button onclick="fetchYaml()" class="fetch-button">Fetch YAML</button>
                 <button onclick="clearAll()">Clear All</button>
             </div>
             <div id="fetchStatus"></div>
-            <textarea id="yamlInput" 
+            <textarea id="yamlInput"
                      placeholder="Paste your Kubernetes YAML here..."
                      oninput="handleManualInput()"></textarea>
             <div id="error" class="error" style="display: none;"></div>
@@ -382,9 +391,9 @@
 
         <div class="navigation" id="resourceList">
             <div class="search-box">
-                <input type="text" 
-                       class="search-input" 
-                       id="resourceSearch" 
+                <input type="text"
+                       class="search-input"
+                       id="resourceSearch"
                        placeholder="Search apiVersion/kind..."
                        oninput="filterResources(this.value)">
             </div>
@@ -437,15 +446,15 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const yaml = await response.text();
-                
+
                 // Update textarea and parse YAML
                 yamlInput.value = yaml;
                 parseYAML();
-                
+
                 // Show success message
                 statusDiv.textContent = 'YAML fetched successfully!';
                 statusDiv.className = 'status-success';
-                
+
                 // Clear success message after 3 seconds
                 setTimeout(() => {
                     statusDiv.textContent = '';
@@ -467,7 +476,7 @@
             const statusDiv = document.getElementById('fetchStatus');
             urlInput.value = '';
             statusDiv.textContent = '';
-            
+
             // Parse the YAML
             parseYAML();
         }
@@ -475,7 +484,7 @@
         function parseYAML() {
             const input = document.getElementById('yamlInput').value;
             const errorElement = document.getElementById('error');
-            
+
             try {
                 // Split the YAML into documents and parse each one
                 resources = input.split('---\n')
@@ -516,11 +525,11 @@
         function filterResources(searchTerm) {
             const groupsContainer = document.getElementById('resourceGroups');
             groupsContainer.innerHTML = '';
-            
+
             searchTerm = searchTerm.toLowerCase();
-            
+
             // Filter groups based on search term
-            const filteredGroups = Object.entries(resourceGroups).filter(([group]) => 
+            const filteredGroups = Object.entries(resourceGroups).filter(([group]) =>
                 group.toLowerCase().includes(searchTerm)
             );
 
@@ -549,7 +558,7 @@
                         link.classList.add('selected');
                     }
                     link.textContent = resource.metadata.name;
-                    
+
                     if (resource.metadata.namespace) {
                         const meta = document.createElement('span');
                         meta.className = 'resource-meta';
@@ -601,7 +610,7 @@
 
         function copyResourceToClipboard() {
             if (selectedResources.size === 0) return;
-            
+
             const yamlContent = Array.from(selectedResources)
                 .map(res => jsyaml.dump(res))
                 .join('\n---\n');
@@ -663,7 +672,7 @@ spec:
   - port: 80
     targetPort: 80
   type: ClusterIP`;
-            
+
             document.getElementById('yamlInput').value = exampleYaml;
             parseYAML();
         };

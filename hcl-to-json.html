@@ -18,6 +18,15 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Terraform HCL to JSON Converter - Online Tool">
     <meta name="twitter:description" content="Convert Terraform HCL IAM policies to JSON format instantly. Free online tool for DevOps engineers and AWS users.">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6PDQBCN90Z"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-6PDQBCN90Z');
+    </script>
     <link rel="canonical" href="https://akarat-tools.xyz/hcl-to-json">
     <link rel="icon" type="image/png" href="favicon.png">
     <style>
@@ -169,36 +178,36 @@
         function convertHCLToJSON(hcl) {
             // Remove comments
             hcl = hcl.replace(/#.*$/gm, '').replace(/\/\/.*$/gm, '');
-            
+
             // Add quotes around unquoted keys
             hcl = hcl.replace(/([{,]\s*)([a-zA-Z0-9_-]+)\s*=/g, '$1"$2" =');
-            
+
             // Convert = to :
             hcl = hcl.replace(/\s*=\s*/g, ': ');
-            
+
             // Add quotes around unquoted string values
             hcl = hcl.replace(/:\s*([a-zA-Z0-9_\-.*:\/]+)(\s*[,}\]])/g, ':"$1"$2');
-            
+
             // Fix boolean and null values
             hcl = hcl.replace(/:\s*"(true|false|null)"/g, ':$1');
-            
+
             // Fix numbers
             hcl = hcl.replace(/:\s*"(\d+)"(?!\d*")/g, ':$1');
-            
+
             // Add missing commas between properties
             hcl = hcl.replace(/}(\s*[}\]])/g, '},$1')  // Add comma after closing brace
                      .replace(/](\s*[}\]])/g, '],$1')   // Add comma after closing bracket
                      .replace(/([^,{[\s])\s*\n\s*"[^"]+"\s*:/g, '$1,\n"') // Add comma between properties
                      .replace(/([^,{[\s])\s*\n\s*([a-zA-Z0-9_-]+)\s*:/g, '$1,\n"$2":'); // Add comma between unquoted keys
-            
+
             // Remove trailing commas
             hcl = hcl.replace(/,(\s*[}\]])/g, '$1');
-            
+
             // Escape special characters in strings, but preserve interpolations
             hcl = hcl.replace(/"([^"]*?)"/g, (match, p1) => {
                 return `"${escapeString(p1)}"`;
             });
-            
+
             try {
                 // Parse and re-stringify to ensure valid JSON
                 return JSON.stringify(JSON.parse(hcl), null, 2);
@@ -211,7 +220,7 @@
             const inputEl = document.getElementById('inputPolicy');
             const outputEl = document.getElementById('outputJson');
             const errorEl = document.getElementById('error');
-            
+
             try {
                 errorEl.textContent = '';
                 const jsonStr = convertHCLToJSON(inputEl.value);

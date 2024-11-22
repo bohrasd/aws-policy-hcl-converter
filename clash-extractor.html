@@ -9,7 +9,7 @@
     <meta name="author" content="Akarat Tools">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#326ce5">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://akarat-tools.xyz/clash-extractor">
@@ -17,16 +17,26 @@
     <meta property="og:description" content="Extract domains and IP addresses from Clash proxy configuration files with ease.">
     <meta property="og:image" content="https://akarat-tools.xyz/og-image.png">
     <meta property="og:site_name" content="Akarat Tools">
-    
+
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Clash Config Extractor - Online Tool">
     <meta name="twitter:description" content="Extract domains and IP addresses from Clash proxy configuration files with ease.">
-    
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6PDQBCN90Z"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-6PDQBCN90Z');
+    </script>
+
     <!-- Canonical URL -->
     <link rel="canonical" href="https://akarat-tools.xyz/clash-extractor">
     <link rel="icon" type="image/png" href="favicon.png">
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <style>
         :root {
@@ -352,11 +362,11 @@ proxies:
                                       .replace(/[^\x20-\x7E\n\r]/g, ''); // Keep only printable chars and newlines
 
                 const config = jsyaml.load(cleanInput, { json: true });
-                
+
                 if (!config) {
                     throw new Error('Invalid YAML: Empty or invalid configuration');
                 }
-                
+
                 if (!config.proxies || !Array.isArray(config.proxies)) {
                     throw new Error('Invalid Clash configuration: proxies field must be an array');
                 }
@@ -431,7 +441,7 @@ proxies:
 
             // IPv6 validation (including compressed format)
             const ipv6Regex = /^(?:(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,7}:|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|(?:[0-9a-fA-F]{1,4}:){1,4}(?::[0-9a-fA-F]{1,4}){1,3}|(?:[0-9a-fA-F]{1,4}:){1,3}(?::[0-9a-fA-F]{1,4}){1,4}|(?:[0-9a-fA-F]{1,4}:){1,2}(?::[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(?:(?::[0-9a-fA-F]{1,4}){1,6})|:(?:(?::[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(?::[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(?:ffff(?::0{1,4}){0,1}:){0,1}(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])|(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
-            
+
             return ipv6Regex.test(str);
         }
 
@@ -440,12 +450,12 @@ proxies:
             let csvContent = Array.from(list)
                 .map(item => item.textContent.trim())
                 .join(',');
-            
+
             // Change button text to show feedback
             const button = document.querySelector(`button[onclick="copyListAsCSV('${listId}', '${type}')"]`);
             const originalText = button.textContent;
             button.textContent = 'Copied!';
-            
+
             navigator.clipboard.writeText(csvContent)
                 .then(() => {
                     // Reset button text after 2 seconds
@@ -467,10 +477,10 @@ proxies:
             const resolvedList = document.getElementById('resolvedList');
             const lookupButton = document.querySelector('button[onclick="lookupDomains()"]');
             const domains = Array.from(domainList.children).map(li => li.textContent);
-            
+
             // Clear previous results
             resolvedList.innerHTML = '';
-            
+
             // Add loading indicator
             const loading = document.createElement('span');
             loading.className = 'loading';
@@ -483,13 +493,13 @@ proxies:
                     try {
                         // Using DNS.SB's DNS over HTTPS API
                         const response = await fetch(`https://dns.google.com/resolve?name=${encodeURIComponent(domain)}&type=A`);
-                        
+
                         if (!response.ok) {
                             throw new Error(`HTTP error! status: ${response.status}`);
                         }
-                        
+
                         const data = await response.json();
-                        
+
                         if (data.Answer && data.Answer.length > 0) {
                             // Get all A records
                             const ips = data.Answer
@@ -520,13 +530,13 @@ proxies:
                                     'Accept': 'application/dns-json'
                                 }
                             });
-                            
+
                             if (!response.ok) {
                                 throw new Error(`HTTP error! status: ${response.status}`);
                             }
-                            
+
                             const data = await response.json();
-                            
+
                             if (data.Answer && data.Answer.length > 0) {
                                 const ips = data.Answer
                                     .filter(record => record.type === 1)
@@ -562,11 +572,11 @@ proxies:
             const yamlTextarea = document.getElementById('inputConfig');
             const errorDisplay = document.getElementById('fetchError');
             const url = urlInput.value.trim();
-            
+
             // Clear previous error
             errorDisplay.textContent = '';
             errorDisplay.classList.remove('show');
-            
+
             if (!url) {
                 showFetchError('Please enter a URL');
                 return;
@@ -594,21 +604,21 @@ proxies:
                 }
 
                 const yamlContent = await response.text();
-                
+
                 // Validate that the content is YAML
                 try {
                     jsyaml.load(yamlContent);
                 } catch (yamlError) {
                     throw new Error('Invalid YAML format in the response');
                 }
-                
+
                 yamlTextarea.value = yamlContent;
                 // Automatically extract info after fetching
                 extractInfo();
             } catch (error) {
                 console.error('Error fetching YAML:', error);
                 let errorMessage = 'Failed to fetch YAML content: ';
-                
+
                 if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
                     errorMessage += 'CORS error - This URL does not allow direct access. ';
                     errorMessage += 'Try downloading the file and pasting its contents directly.';
@@ -617,7 +627,7 @@ proxies:
                 } else {
                     errorMessage += error.message;
                 }
-                
+
                 showFetchError(errorMessage);
             }
         }

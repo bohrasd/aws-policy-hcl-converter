@@ -20,6 +20,15 @@
     <meta name="twitter:description" content="Convert JSON to Jsonnet format instantly. Free online tool for DevOps engineers and Kubernetes users.">
     <link rel="canonical" href="https://akarat-tools.xyz/json-to-jsonnet">
     <link rel="icon" type="image/png" href="favicon.png">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6PDQBCN90Z"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-6PDQBCN90Z');
+    </script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
@@ -140,7 +149,7 @@
         .copy-button:hover {
             background-color: #218838;
         }
-        
+
         /* Responsive design improvements */
         @media (max-width: 768px) {
             .converter-container {
@@ -200,14 +209,14 @@
             const jsonInput = document.getElementById('jsonInput').value;
             const errorElement = document.getElementById('inputError');
             const outputElement = document.getElementById('jsonnetOutput');
-            
+
             try {
                 // Parse JSON to validate it
                 const parsedJson = JSON.parse(jsonInput);
-                
+
                 // Convert to Jsonnet format
                 const jsonnetOutput = convertJsonToJsonnet(parsedJson);
-                
+
                 outputElement.value = jsonnetOutput;
                 errorElement.textContent = '';
             } catch (error) {
@@ -218,9 +227,9 @@
 
         function convertJsonToJsonnet(obj, indent = 0) {
             if (obj === null) return 'null';
-            
+
             const spaces = '  '.repeat(indent);
-            
+
             switch (typeof obj) {
                 case 'string':
                     return `'${obj.replace(/'/g, "\\'")}'`;
@@ -252,7 +261,7 @@
                 if (typeof current === 'string') {
                     const count = stringCounts.get(current) || 0;
                     stringCounts.set(current, count + 1);
-                    
+
                     const paths = stringPaths.get(current) || [];
                     paths.push([...path]);
                     stringPaths.set(current, paths);
@@ -313,23 +322,23 @@
             const jsonInput = document.getElementById('jsonInput').value;
             const errorElement = document.getElementById('inputError');
             const outputElement = document.getElementById('jsonnetOutput');
-            
+
             try {
                 const parsedJson = JSON.parse(jsonInput);
                 const { params, parameterized } = parameterizeJson(parsedJson);
-                
+
                 // Generate Jsonnet with parameters
                 let jsonnetOutput = 'local ';
                 jsonnetOutput += Object.entries(params)
                     .map(([param, value]) => `${param} = '${value}'`)
                     .join(';\nlocal ');
-                
+
                 if (Object.keys(params).length > 0) {
                     jsonnetOutput += ';\n\n';
                 }
-                
+
                 jsonnetOutput += convertJsonToJsonnet(parameterized);
-                
+
                 outputElement.value = jsonnetOutput;
                 errorElement.textContent = '';
             } catch (error) {
@@ -342,7 +351,7 @@
             const output = document.getElementById('jsonnetOutput');
             output.select();
             document.execCommand('copy');
-            
+
             const copyButton = document.querySelector('.copy-button');
             const originalText = copyButton.textContent;
             copyButton.textContent = 'Copied!';

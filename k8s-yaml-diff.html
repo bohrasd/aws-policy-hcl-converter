@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kubernetes YAML Diff | Compare K8s YAML with Auto-Sort</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6PDQBCN90Z"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-6PDQBCN90Z');
+    </script>
     <style>
         :root {
             --primary-color: #326ce5;
@@ -363,25 +372,25 @@
                 // Parse YAML
                 const docs = [];
                 jsyaml.loadAll(yamlStr, doc => docs.push(doc));
-                
+
                 // Sort documents
                 docs.sort((a, b) => {
                     // Compare apiVersion
                     const apiVersionCompare = (a.apiVersion || '').localeCompare(b.apiVersion || '');
                     if (apiVersionCompare !== 0) return apiVersionCompare;
-                    
+
                     // Compare kind
                     const kindCompare = (a.kind || '').localeCompare(b.kind || '');
                     if (kindCompare !== 0) return kindCompare;
-                    
+
                     // Compare namespace
                     const namespaceCompare = (a.metadata?.namespace || '').localeCompare(b.metadata?.namespace || '');
                     if (namespaceCompare !== 0) return namespaceCompare;
-                    
+
                     // Compare name
                     return (a.metadata?.name || '').localeCompare(b.metadata?.name || '');
                 });
-                
+
                 // Convert back to YAML
                 return docs.map(doc => jsyaml.dump(doc, { lineWidth: -1 })).join('---\n');
             } catch (error) {
@@ -429,7 +438,7 @@
                     const lines2 = resource2.split('\n');
                     const lineDiffs = lines1.map((line, i) => i >= lines2.length || line !== lines2[i]);
                     const isDifferent = lineDiffs.some(diff => diff);
-                    
+
                     // Extract resource kind and name for navigation
                     let kind = '', name = '';
                     try {
@@ -437,17 +446,17 @@
                         kind = yaml.kind || '';
                         name = yaml.metadata?.name || '';
                     } catch (e) {}
-                    
+
                     return { isDifferent, lines: lineDiffs, kind, name };
                 });
 
                 // Create navigation items
                 const navItems = resourceDiffs.map((diff, index) => {
                     if (!showEquivalent && !diff.isDifferent) return '';
-                    const label = diff.kind && diff.name ? 
-                        `${diff.kind}/${diff.name}` : 
+                    const label = diff.kind && diff.name ?
+                        `${diff.kind}/${diff.name}` :
                         `Resource ${index + 1}`;
-                    return `<div class="nav-item ${diff.isDifferent ? 'has-diff' : ''}" 
+                    return `<div class="nav-item ${diff.isDifferent ? 'has-diff' : ''}"
                                 onclick="document.getElementById('resource-${index}').scrollIntoView({behavior: 'smooth'})">
                             ${escapeHtml(label)}
                         </div>`;
@@ -468,7 +477,7 @@
                                 ${resources1.map((resource, resourceIndex) => {
                                     const { isDifferent, lines: lineDiffs } = resourceDiffs[resourceIndex];
                                     if (!showEquivalent && !isDifferent) return '';
-                                    
+
                                     const resourceLines = resource.split('\n');
                                     return `<div id="resource-${resourceIndex}" class="resource-anchor">
                                         ${resourceLines.map((line, lineIndex) => {
@@ -481,17 +490,17 @@
                             </div>
                             <div class="diff-column">
                                 ${resources2.map((resource, resourceIndex) => {
-                                    const isDifferent = resourceIndex >= resources1.length || 
+                                    const isDifferent = resourceIndex >= resources1.length ||
                                         resource.trim() !== resources1[resourceIndex].trim();
                                     if (!showEquivalent && !isDifferent) return '';
 
-                                    const lines1 = resourceIndex < resources1.length ? 
+                                    const lines1 = resourceIndex < resources1.length ?
                                         resources1[resourceIndex].split('\n') : [];
                                     const lines2 = resource.split('\n');
-                                    
+
                                     return `<div id="resource-${resourceIndex}-right">
                                         ${lines2.map((line, lineIndex) => {
-                                            const isLineDifferent = lineIndex >= lines1.length || 
+                                            const isLineDifferent = lineIndex >= lines1.length ||
                                                 line !== lines1[lineIndex];
                                             return `<div class="diff-line ${isLineDifferent ? 'diff-added' : ''}">${escapeHtml(line)}</div>`;
                                         }).join('')}
