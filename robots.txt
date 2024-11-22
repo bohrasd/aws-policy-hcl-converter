@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://akarat-tools.xyz/sitemap.xml
