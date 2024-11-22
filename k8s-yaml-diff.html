@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes YAML Diff | Compare K8s YAML with Auto-Sort</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #326ce5;
+            --background-color: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .sort-info {
+            text-align: center;
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .yaml-input {
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            width: 100%;
+            height: 400px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: monospace;
+            resize: vertical;
+            margin-bottom: 0.5rem;
+            box-sizing: border-box;
+            display: block;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        input[type="checkbox"] {
+            margin: 0;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #2857b8;
+        }
+
+        .error {
+            color: #dc3545;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        #diffOutput {
+            margin-top: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            overflow: auto;
+            background: white;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            font-size: 12px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--border-color);
+        }
+
+        .diff-container {
+            display: flex;
+            gap: 20px;
+            position: relative;
+        }
+
+        .diff-nav {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 250px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .diff-nav-title {
+            font-weight: 600;
+            color: #333;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .diff-nav-title:after {
+            content: '▼';
+            font-size: 0.8em;
+            transition: transform 0.2s;
+        }
+
+        .diff-nav-title.collapsed:after {
+            transform: rotate(-90deg);
+        }
+
+        .nav-items {
+            max-height: calc(100vh - 150px);
+            overflow-y: auto;
+            display: block;
+            background: white;
+            transition: max-height 0.2s ease-out;
+        }
+
+        .nav-items.collapsed {
+            max-height: 0;
+            overflow: hidden;
+        }
+
+        .nav-item {
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #666;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .nav-item.has-diff {
+            color: var(--primary-color);
+            font-weight: 500;
+            border-left-color: var(--primary-color);
+        }
+
+        .diff-view {
+            flex-grow: 1;
+            display: flex;
+            gap: 20px;
+            margin-right: 270px;
+            width: 100%;
+        }
+
+        .resource-anchor {
+            scroll-margin-top: 20px;
+        }
+
+        .diff-column {
+            flex: 1;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre;
+            overflow-x: auto;
+            tab-size: 2;
+            counter-reset: line;
+            padding-left: 3.5em;
+            position: relative;
+        }
+
+        .diff-line {
+            padding: 0 4px;
+            margin: 0;
+            min-height: 1.5em;
+            counter-increment: line;
+            position: relative;
+        }
+
+        .diff-line::before {
+            content: counter(line);
+            position: absolute;
+            left: -3em;
+            width: 2.5em;
+            text-align: right;
+            color: #999;
+            font-size: 12px;
+            user-select: none;
+        }
+
+        .diff-removed {
+            background-color: #ffe6e6;
+            color: #8b0000;
+        }
+
+        .diff-added {
+            background-color: #e6ffe6;
+            color: #006400;
+        }
+
+        .diff-line:empty::after {
+            content: "\00a0";
+        }
+
+        .resource-separator {
+            border-top: 1px solid #eee;
+            margin: 10px -10px;
+            padding: 0 10px;
+            color: #666;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 12px;
+            user-select: none;
+        }
+
+        @media (max-width: 768px) {
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .nav-header {
+            background-color: #333;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #ccc;
+        }
+
+        .nav-link.active {
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header class="nav-header">
+        <nav class="nav-container">
+            <a href="https://akarat-tools.xyz" class="nav-brand">Akarat Tools</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">AWS Policy Converter</a>
+                <a href="json-to-jsonnet.html" class="nav-link">JSON to Jsonnet</a>
+                <a href="hcl-to-json.html" class="nav-link">HCL to JSON</a>
+                <a href="yaml-navigator.html" class="nav-link">YAML Navigator</a>
+                <a href="k8s-yaml-diff.html" class="nav-link active">Kubernetes YAML Diff</a>
+                <a href="clash-extractor.html" class="nav-link">Clash Extractor</a>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>Kubernetes YAML Diff</h1>
+        <div class="sort-info">Resources are automatically sorted by: apiVersion → kind → namespace → name</div>
+        <div class="input-grid">
+            <div class="yaml-input">
+                <textarea id="yaml1" placeholder="Paste your first Kubernetes YAML here..." onpaste="handlePaste(event, 'yaml1')"></textarea>
+                <button class="copy-button" onclick="copyToClipboard('yaml1')">Copy</button>
+            </div>
+            <div class="yaml-input">
+                <textarea id="yaml2" placeholder="Paste your second Kubernetes YAML here..." onpaste="handlePaste(event, 'yaml2')"></textarea>
+                <button class="copy-button" onclick="copyToClipboard('yaml2')">Copy</button>
+            </div>
+        </div>
+        <div class="button-container">
+            <button onclick="compareYaml()">Compare YAML</button>
+            <div class="checkbox-container">
+                <input type="checkbox" id="showEquivalent" onchange="compareYaml()">
+                <label for="showEquivalent">Show equivalent resources</label>
+            </div>
+        </div>
+        <div id="error" class="error"></div>
+        <div id="diffOutput"></div>
+    </div>
+
+    <script>
+        function sortK8sYaml(yamlStr) {
+            try {
+                // Parse YAML
+                const docs = [];
+                jsyaml.loadAll(yamlStr, doc => docs.push(doc));
+                
+                // Sort documents
+                docs.sort((a, b) => {
+                    // Compare apiVersion
+                    const apiVersionCompare = (a.apiVersion || '').localeCompare(b.apiVersion || '');
+                    if (apiVersionCompare !== 0) return apiVersionCompare;
+                    
+                    // Compare kind
+                    const kindCompare = (a.kind || '').localeCompare(b.kind || '');
+                    if (kindCompare !== 0) return kindCompare;
+                    
+                    // Compare namespace
+                    const namespaceCompare = (a.metadata?.namespace || '').localeCompare(b.metadata?.namespace || '');
+                    if (namespaceCompare !== 0) return namespaceCompare;
+                    
+                    // Compare name
+                    return (a.metadata?.name || '').localeCompare(b.metadata?.name || '');
+                });
+                
+                // Convert back to YAML
+                return docs.map(doc => jsyaml.dump(doc, { lineWidth: -1 })).join('---\n');
+            } catch (error) {
+                console.error('Error sorting YAML:', error);
+                return yamlStr; // Return original if sorting fails
+            }
+        }
+
+        function handlePaste(event, elementId) {
+            // Let the paste happen normally
+            setTimeout(() => {
+                const textarea = document.getElementById(elementId);
+                const sortedYaml = sortK8sYaml(textarea.value);
+                textarea.value = sortedYaml;
+            }, 0);
+        }
+
+        function compareYaml() {
+            try {
+                // Get and sort both YAML inputs
+                const yaml1 = document.getElementById('yaml1').value;
+                const yaml2 = document.getElementById('yaml2').value;
+
+                if (!yaml1 || !yaml2) {
+                    throw new Error('Please provide both YAML inputs');
+                }
+
+                const sortedYaml1 = sortK8sYaml(yaml1);
+                const sortedYaml2 = sortK8sYaml(yaml2);
+
+                // Split into resources (separated by ---)
+                const resources1 = sortedYaml1.split('---\n').filter(r => r.trim());
+                const resources2 = sortedYaml2.split('---\n').filter(r => r.trim());
+
+                const showEquivalent = document.getElementById('showEquivalent').checked;
+
+                // Create the diff view
+                const diffOutput = document.getElementById('diffOutput');
+
+                // Find different resources and their differing lines
+                const resourceDiffs = resources1.map((resource1, index) => {
+                    if (index >= resources2.length) return { isDifferent: true, lines: null };
+                    const resource2 = resources2[index];
+                    const lines1 = resource1.split('\n');
+                    const lines2 = resource2.split('\n');
+                    const lineDiffs = lines1.map((line, i) => i >= lines2.length || line !== lines2[i]);
+                    const isDifferent = lineDiffs.some(diff => diff);
+                    
+                    // Extract resource kind and name for navigation
+                    let kind = '', name = '';
+                    try {
+                        const yaml = jsyaml.load(resource1);
+                        kind = yaml.kind || '';
+                        name = yaml.metadata?.name || '';
+                    } catch (e) {}
+                    
+                    return { isDifferent, lines: lineDiffs, kind, name };
+                });
+
+                // Create navigation items
+                const navItems = resourceDiffs.map((diff, index) => {
+                    if (!showEquivalent && !diff.isDifferent) return '';
+                    const label = diff.kind && diff.name ? 
+                        `${diff.kind}/${diff.name}` : 
+                        `Resource ${index + 1}`;
+                    return `<div class="nav-item ${diff.isDifferent ? 'has-diff' : ''}" 
+                                onclick="document.getElementById('resource-${index}').scrollIntoView({behavior: 'smooth'})">
+                            ${escapeHtml(label)}
+                        </div>`;
+                }).join('');
+
+                diffOutput.innerHTML = `
+                    <div class="diff-container">
+                        <div class="diff-nav">
+                            <div class="diff-nav-title" onclick="this.classList.toggle('collapsed'); this.nextElementSibling.classList.toggle('collapsed')">
+                                Resources <span style="margin-left: 8px; color: #666;">(${resourceDiffs.filter(d => d.isDifferent).length} differences)</span>
+                            </div>
+                            <div class="nav-items">
+                                ${navItems}
+                            </div>
+                        </div>
+                        <div class="diff-view">
+                            <div class="diff-column">
+                                ${resources1.map((resource, resourceIndex) => {
+                                    const { isDifferent, lines: lineDiffs } = resourceDiffs[resourceIndex];
+                                    if (!showEquivalent && !isDifferent) return '';
+                                    
+                                    const resourceLines = resource.split('\n');
+                                    return `<div id="resource-${resourceIndex}" class="resource-anchor">
+                                        ${resourceLines.map((line, lineIndex) => {
+                                            const isLineDifferent = lineDiffs ? lineDiffs[lineIndex] : true;
+                                            return `<div class="diff-line ${isLineDifferent ? 'diff-removed' : ''}">${escapeHtml(line)}</div>`;
+                                        }).join('')}
+                                        ${resourceIndex < resources1.length - 1 ? '<div class="diff-line">---</div>' : ''}
+                                    </div>`;
+                                }).join('')}
+                            </div>
+                            <div class="diff-column">
+                                ${resources2.map((resource, resourceIndex) => {
+                                    const isDifferent = resourceIndex >= resources1.length || 
+                                        resource.trim() !== resources1[resourceIndex].trim();
+                                    if (!showEquivalent && !isDifferent) return '';
+
+                                    const lines1 = resourceIndex < resources1.length ? 
+                                        resources1[resourceIndex].split('\n') : [];
+                                    const lines2 = resource.split('\n');
+                                    
+                                    return `<div id="resource-${resourceIndex}-right">
+                                        ${lines2.map((line, lineIndex) => {
+                                            const isLineDifferent = lineIndex >= lines1.length || 
+                                                line !== lines1[lineIndex];
+                                            return `<div class="diff-line ${isLineDifferent ? 'diff-added' : ''}">${escapeHtml(line)}</div>`;
+                                        }).join('')}
+                                        ${resourceIndex < resources2.length - 1 ? '<div class="diff-line">---</div>' : ''}
+                                    </div>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                diffOutput.style.display = 'block';
+                document.getElementById('error').textContent = '';
+
+            } catch (error) {
+                document.getElementById('error').textContent = `Error: ${error.message}`;
+                document.getElementById('diffOutput').style.display = 'none';
+            }
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            navigator.clipboard.writeText(element.value)
+                .then(() => {
+                    const button = document.querySelector(`button[onclick="copyToClipboard('${elementId}')"]`);
+                    const originalText = button.textContent;
+                    button.textContent = 'Copied!';
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy:', err);
+                });
+        }
+    </script>
+</body>
+</html>
