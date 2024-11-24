@@ -53,50 +53,223 @@
 
         gtag('config', 'G-6PDQBCN90Z');
     </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+        :root {
+            --primary-gradient: linear-gradient(135deg, #FF0080, #7928CA, #FF0080);
+            --hover-gradient: linear-gradient(135deg, #FF0080, #7928CA, #FF0080);
+            --text-gradient: linear-gradient(-45deg, #FF0080, #7928CA, #FF0080, #7928CA);
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Outfit', sans-serif;
         }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,0,128,0.5); }
+            50% { text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.8), 0 0 40px rgba(121,40,202,0.5); }
+            100% { text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,0,128,0.5); }
+        }
+
+        @keyframes shine {
+            0% { background-position: 200% center; }
+            100% { background-position: -200% center; }
+        }
+
         .nav-header {
-            background-color: #f8f9fa;
-            padding: 1rem;
-            border-bottom: 1px solid #e9ecef;
-            margin-bottom: 2rem;
+            background: var(--primary-gradient);
+            background-size: 300% 300%;
+            animation: gradient 15s ease infinite;
+            padding: 0.75rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
+
+        .nav-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, 
+                rgba(255,255,255,0.2) 0%,
+                rgba(255,255,255,0.1) 20%,
+                transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         .nav-container {
             max-width: 1200px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 1;
         }
+
         .nav-brand {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #333;
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
             text-decoration: none;
+            letter-spacing: -1px;
+            position: relative;
+            padding: 0.25rem 0.75rem;
+            transition: all 0.5s ease;
+            background: linear-gradient(to right, #fff, #fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 3s ease-in-out infinite;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
         }
+
+        .nav-brand:hover {
+            animation: float 3s ease-in-out infinite;
+            filter: brightness(1.2);
+        }
+
+        .nav-link {
+            font-family: var(--font-body);
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            transition: 0.5s;
+        }
+
+        .nav-link:hover::before {
+            transform: translateX(100%);
+        }
+
+        .nav-link:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border-color: rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.2);
+        }
+
+        .nav-link.active {
+            background: rgba(255,255,255,0.3);
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.6);
+        }
+
         .nav-links {
             display: flex;
-            gap: 1.5rem;
+            gap: 1rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
         }
-        .nav-link {
-            color: #666;
-            text-decoration: none;
-            padding: 0.5rem;
-            border-radius: 4px;
-            transition: all 0.2s;
+
+        h1 {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--text-gradient);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 1.5rem 0 0.75rem;
+            text-align: center;
+            letter-spacing: -2px;
+            line-height: 1.1;
+            animation: gradient 8s linear infinite;
+            position: relative;
         }
-        .nav-link:hover {
-            color: #333;
-            background-color: #e9ecef;
+
+        h1::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            background-size: 200% 100%;
+            animation: shine 3s infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .nav-link.active {
-            color: #007bff;
-            font-weight: 500;
+
+        @media (max-width: 768px) {
+            .nav-header {
+                padding: 0.5rem;
+            }
+
+            .nav-brand {
+                font-size: 1.75rem;
+            }
+
+            .nav-link {
+                font-size: 0.875rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+                margin: 1rem 0 0.5rem;
+            }
+
+            .description {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
+            }
         }
+
+        body {
+            font-family: var(--font-body);
+            margin: 0;
+            padding: 0;
+            background-color: #fafafa;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -105,16 +278,7 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .description {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #666;
-        }
+
         .converter-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -122,11 +286,13 @@
             margin: 0 auto;
             max-width: 100%;
         }
+
         .input-section, .output-section {
             display: flex;
             flex-direction: column;
             min-width: 0; /* Prevents flex items from overflowing */
         }
+
         textarea {
             width: 100%;
             height: 400px;
@@ -140,6 +306,7 @@
             font-size: 14px;
             line-height: 1.5;
         }
+
         .button-container {
             text-align: center;
             margin: 20px 0;
@@ -148,45 +315,161 @@
             justify-content: center;
             gap: 10px;
         }
+
         button {
-            background-color: #007AFF;
+            font-family: var(--font-body);
+            background: var(--primary-gradient);
+            background-size: 200% 200%;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 100px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.2s;
-            white-space: nowrap;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 2px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
+
         button:hover {
-            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            background-position: right center;
+            filter: brightness(1.1);
         }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .copy-button {
+            background: linear-gradient(135deg, #059669, #10b981);
+            background-size: 200% 200%;
+        }
+
+        .copy-button:hover {
+            background-position: right center;
+            filter: brightness(1.1);
+        }
+
         .error {
             color: #dc3545;
             margin-top: 10px;
             font-size: 14px;
         }
-        .copy-button {
-            background-color: #28a745;
-        }
-        .copy-button:hover {
-            background-color: #218838;
+
+        footer {
+            background: var(--primary-gradient);
+            background-size: 300% 300%;
+            animation: gradient 15s ease infinite;
+            padding: 2rem 1rem;
+            margin-top: 4rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Responsive design improvements */
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, 
+                rgba(255,255,255,0.1) 0%,
+                rgba(255,255,255,0.05) 20%,
+                transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .footer-link:hover {
+            color: white;
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .copyright {
+            font-family: var(--font-body);
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+            text-align: center;
+            width: 100%;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
         @media (max-width: 768px) {
-            .converter-container {
-                grid-template-columns: 1fr;
-                gap: 20px;
+            footer {
+                padding: 1.5rem 1rem;
             }
-            .button-container {
-                grid-column: 1;
+
+            .footer-content {
                 flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
             }
+
+            .footer-links {
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            .footer-link {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .copyright {
+                margin-top: 1.5rem;
+                font-size: 0.8rem;
+            }
+
             button {
-                width: 100%;
-                margin: 5px 0;
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -206,7 +489,7 @@
         </nav>
     </header>
     <div class="container">
-        <h1>JSON to Jsonnet Converter</h1>
+        <h1 data-text="JSON to Jsonnet Converter">JSON to Jsonnet Converter</h1>
         <div class="description">
             Transform JSON configurations into concise Jsonnet format. Ideal for Kubernetes, Grafana, and other JSON-based configurations.
         </div>
