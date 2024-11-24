@@ -39,30 +39,24 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <style>
-        :root {
-            --primary-color: #326ce5;
-            --background-color: #f8f9fa;
-            --border-color: #dee2e6;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            font-family: 'MS Sans Serif', 'Microsoft Sans Serif', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: var(--background-color);
+            background-color: #c0c0c0;
+            color: #000000;
         }
 
         .nav-header {
-            background-color: white;
+            background-color: #c0c0c0;
             padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            border-bottom: 2px solid #808080;
+            border-top: 2px solid #ffffff;
+            margin-bottom: 2rem;
         }
 
         .nav-container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -72,13 +66,8 @@
         .nav-brand {
             font-size: 1.25rem;
             font-weight: bold;
-            color: #333;
+            color: #000000;
             text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .nav-brand:hover {
-            color: var(--primary-color);
         }
 
         .nav-links {
@@ -87,39 +76,117 @@
         }
 
         .nav-link {
-            color: #666;
+            color: #000000;
             text-decoration: none;
             padding: 0.5rem;
-            border-radius: 4px;
-            transition: all 0.2s;
+            border: 2px solid transparent;
         }
 
-        .nav-link:hover {
-            color: #333;
-            background-color: #e9ecef;
-        }
-
-        .nav-link.active {
-            color: var(--primary-color);
-            font-weight: 500;
+        .nav-link:hover, .nav-link.active {
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-bottom: 2px solid #808080;
+            border-right: 2px solid #808080;
+            background-color: #c0c0c0;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 20px;
+            background-color: #c0c0c0;
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-bottom: 2px solid #808080;
+            border-right: 2px solid #808080;
         }
 
         h1 {
-            color: #333;
+            color: #000000;
             text-align: center;
-            margin-bottom: 1rem;
+            margin-bottom: 30px;
+            font-size: 24px;
         }
 
         .description {
             text-align: center;
-            margin-bottom: 2rem;
-            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #000000;
+        }
+
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            height: 400px;
+            padding: 15px;
+            border-top: 2px solid #808080;
+            border-left: 2px solid #808080;
+            border-bottom: 2px solid #ffffff;
+            border-right: 2px solid #ffffff;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            background-color: #ffffff;
+            color: #000000;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 6px 20px;
+            background-color: #c0c0c0;
+            color: #000000;
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-bottom: 2px solid #808080;
+            border-right: 2px solid #808080;
+            cursor: pointer;
+            font-family: 'MS Sans Serif', 'Microsoft Sans Serif', sans-serif;
+            font-size: 14px;
+        }
+
+        button:active {
+            border-top: 2px solid #808080;
+            border-left: 2px solid #808080;
+            border-bottom: 2px solid #ffffff;
+            border-right: 2px solid #ffffff;
+            padding: 7px 19px 5px 21px;
+        }
+
+        .error {
+            color: #ff0000;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .site-footer {
+            background-color: #c0c0c0;
+            padding: 20px;
+            margin-top: 20px;
+            border-top: 2px solid #808080;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-links {
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: #000000;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
         }
 
         .extractor-container {
@@ -136,41 +203,10 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        textarea {
-            width: 100%;
-            height: 300px;
-            padding: 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-family: monospace;
-            resize: vertical;
-            margin-bottom: 1rem;
-        }
-
         .button-container {
             display: flex;
             gap: 1rem;
             margin-bottom: 1rem;
-        }
-
-        button {
-            padding: 0.5rem 1rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        button:hover {
-            background-color: #2857b8;
-        }
-
-        .error {
-            color: #dc3545;
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
         }
 
         .results-container {
