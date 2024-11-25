@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AWS IAM Policy to Terraform HCL Converter | Free Online Tool</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="alternate icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAF0WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4yLWMwMDAgNzkuMWI2NWE3OWI0LCAyMDIyLzA2LzEzLTIyOjAxOjAxICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjQuMCAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMjMtMDctMjBUMTU6MzQ6NDctMDc6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjMtMDctMjBUMTU6MzQ6NDctMDc6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTA3LTIwVDE1OjM0OjQ3LTA3OjAwIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjA1MGZiMjY0LWVkOWUtNDM5Mi1hOWU4LTU2MmM2ZDQ4ZjYz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">
+    <link rel="alternate icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAF0WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4yLWMwMDAgNzkuMWI2NWE3OWI0LCAyMDIyLzA2LzEzLTIyOjAxOjAxICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjQuMCAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMjMtMDctMjBUMTU6MzQ6NDctMDc6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjMt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">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
@@ -245,8 +245,10 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            opacity: 0;
             transition: left 0.5s ease;
+            z-index: -1;
+            border-radius: 0.5rem;
         }
 
         .btn:hover {
@@ -277,6 +279,102 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        .loading-spinner {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 1rem;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.95rem;
+            max-width: 400px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification.error {
+            background-color: #dc3545;
+        }
+
+        .notification.success {
+            background-color: #28a745;
+        }
+
+        .notification.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .notification-icon {
+            font-size: 1.25rem;
+        }
+
+        .notification-message {
+            flex-grow: 1;
+            line-height: 1.4;
+        }
+
+        .notification-close {
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+
+        .notification-close:hover {
+            opacity: 1;
         }
 
         .error-message {
@@ -365,13 +463,79 @@
             }
         }
 
+        .tool-description {
+            padding: 2rem 0;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .description-container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .description-content {
+            max-width: 650px;
+            width: 100%;
+        }
+
+        .description-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin: 0.5rem 0;
+        }
+
+        .description-list {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            list-style-type: none;
+            padding: 1rem 0;
+            margin: 0;
+        }
+
+        .description-list li {
+            margin-bottom: 1.5rem;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .description-list li:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .description-list li strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .description-list li p {
+            margin: 0;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .description-section {
+            margin-top: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
         /* Footer Styles */
         .site-footer {
-            background: white;
-            padding: 1rem 0;
-            margin-top: 2rem;
+            background: #f8f9fa;
+            padding: 2rem 0;
+            margin-top: 3rem;
             border-top: 1px solid #eee;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
         
         .footer-content {
@@ -380,17 +544,53 @@
         }
         
         .footer-links {
-            margin: 0.5rem 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 1rem 0;
         }
         
         .footer-links a {
             color: var(--text-secondary);
             text-decoration: none;
-            margin: 0 1rem;
+            transition: color 0.2s ease;
+            position: relative;
         }
         
         .footer-links a:hover {
             color: var(--primary-color);
+        }
+        
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--primary-color);
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s ease;
+        }
+        
+        .footer-links a:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        .footer-content p {
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: center;
+            }
         }
     </style>
     <!-- JSON-LD structured data for better SEO -->
@@ -503,8 +703,143 @@
                 </div>
             </div>
         </div>
+        <div class="tool-description">
+            <div class="description-container">
+                <div class="description-content">
+                    <p class="description-text">
+                        AWS IAM policies define permissions through the following elements:
+                    </p>
+                    <ul class="description-list">
+                        <li>
+                            <strong>Version</strong>
+                            <p>Specify the version of the policy language that you want to use. We recommend that you use the latest 2012-10-17 version. For more information, see IAM JSON policy elements: Version</p>
+                        </li>
+
+                        <li>
+                            <strong>Statement</strong>
+                            <p>Use this main policy element as a container for the following elements. You can include more than one statement in a policy.</p>
+                        </li>
+
+                        <li>
+                            <strong>Sid <span style="color: #666; font-size: 0.9em; font-weight: normal;">(Optional)</span></strong>
+                            <p>Include an optional statement ID to differentiate between your statements.</p>
+                        </li>
+
+                        <li>
+                            <strong>Effect</strong>
+                            <p>Use Allow or Deny to indicate whether the policy allows or denies access.</p>
+                        </li>
+
+                        <li>
+                            <strong>Principal <span style="color: #666; font-size: 0.9em; font-weight: normal;">(Required in some circumstances)</span></strong>
+                            <p>If you create a resource-based policy, you must indicate the account, user, role, or federated user to which you would like to allow or deny access. If you are creating an IAM permissions policy to attach to a user or role, you cannot include this element. The principal is implied as that user or role.</p>
+                        </li>
+
+                        <li>
+                            <strong>Action</strong>
+                            <p>Include a list of actions that the policy allows or denies.</p>
+                        </li>
+
+                        <li>
+                            <strong>Resource <span style="color: #666; font-size: 0.9em; font-weight: normal;">(Required in some circumstances)</span></strong>
+                            <p>If you create an IAM permissions policy, you must specify a list of resources to which the actions apply. If you create a resource-based policy, it depends on the resource you're using as to whether this element is required or not.</p>
+                        </li>
+
+                        <li>
+                            <strong>Condition <span style="color: #666; font-size: 0.9em; font-weight: normal;">(Optional)</span></strong>
+                            <p>Specify the circumstances under which the policy grants permission.</p>
+                        </li>
+                    </ul>
+
+                    <!-- New section for pattern matching -->
+                    <div style="margin-top: 30px; padding-left: 16px; border-left: 3px solid #e1e4e8;">
+                        <h4 style="color: #24292e;">Pattern Matching in AWS Policies</h4>
+                        <p style="margin: 0; line-height: 1.6;">AWS IAM policies support pattern matching through glob-style wildcards and regex-like syntax:</p>
+                        
+                        <div style="margin-top: 15px;">
+                            <h5 style="color: #24292e; margin-bottom: 10px;">Resource Patterns:</h5>
+                            <ul style="list-style-type: none; padding-left: 0;">
+                                <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">*</code> - Matches any combination of characters</li>
+                                <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">?</code> - Matches exactly one character</li>
+                                <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">${...}</code> - Variable substitution (e.g., <code style="background: #f6f8fa; padding: 2px 5px;">${aws:username}</code>)</li>
+                                <li style="margin-bottom: 8px;">Example: <code style="background: #f6f8fa; padding: 2px 5px;">arn:aws:s3:::my-bucket/*</code> matches all objects in the bucket</li>
+                            </ul>
+                        </div>
+
+                        <div style="margin-top: 15px;">
+                            <h5 style="color: #24292e; margin-bottom: 10px;">Action Patterns:</h5>
+                            <ul style="list-style-type: none; padding-left: 0;">
+                                <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">service:*</code> - All actions in a service (e.g., <code style="background: #f6f8fa; padding: 2px 5px;">s3:*</code>)</li>
+                                <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">service:action*</code> - Actions with prefix (e.g., <code style="background: #f6f8fa; padding: 2px 5px;">iam:Get*</code>)</li>
+                                <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">service:*action</code> - Actions with suffix</li>
+                                <li style="margin-bottom: 8px;">Example: <code style="background: #f6f8fa; padding: 2px 5px;">iam:*Role*</code> matches CreateRole, DeleteRole, etc.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 30px; padding-left: 16px; border-left: 3px solid #e1e4e8;">
+                        <h4 style="color: #24292e;">Terraform aws_iam_policy_document Fields</h4>
+                        
+                        <h5 style="color: #24292e; margin: 15px 0 10px;">Top-level Arguments</h5>
+                        <ul style="list-style-type: none; padding-left: 0;">
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">policy_id</code> (Optional) - An ID for the policy document</li>
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">source_policy_documents</code> (Optional) - List of IAM policy documents that are merged together</li>
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">override_policy_documents</code> (Optional) - List of IAM policy documents that override others</li>
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">version</code> (Optional) - IAM policy version (2008-10-17 or 2012-10-17)</li>
+                        </ul>
+
+                        <h5 style="color: #24292e; margin: 20px 0 10px;">Statement Arguments</h5>
+                        <p style="margin-bottom: 10px;">The following arguments are optional:</p>
+                        <ul style="list-style-type: none; padding-left: 0;">
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">actions</code> - List of actions that this statement either allows or denies. For example, ["ec2:RunInstances", "s3:*"]</li>
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">effect</code> - Whether this statement allows or denies the given actions. Valid values are Allow and Deny</li>
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">not_actions</code> - List of actions that this statement does not apply to</li>
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">resources</code> - List of resource ARNs. Required for IAM policies. Conflicts with not_resources</li>
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">not_resources</code> - List of resource ARNs that this statement does not apply to. Conflicts with resources</li>
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">principals</code> - Configuration block for principals. Detailed below</li>
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">not_principals</code> - Principals that the statement does not apply to</li>
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">sid</code> - Statement ID to identify the policy statement</li>
+                        </ul>
+
+                        <h5 style="color: #24292e; margin: 20px 0 10px;">Principal Arguments</h5>
+                        <p style="margin-bottom: 10px;">Required configuration for principal blocks:</p>
+                        <ul style="list-style-type: none; padding-left: 0;">
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">type</code> (Required) - Type of principal (AWS, Service, Federated, etc.)</li>
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">identifiers</code> (Required) - List of principal identifiers</li>
+                        </ul>
+
+                        <h5 style="color: #24292e; margin: 20px 0 10px;">Condition Block</h5>
+                        <p style="margin-bottom: 10px;">Multiple conditions use "AND" operation - all must be true. The following arguments are required:</p>
+                        <ul style="list-style-type: none; padding-left: 0;">
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">test</code> - Name of the IAM condition operator to evaluate</li>
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">variable</code> - Context Variable name (aws: prefix for AWS variables, service-specific prefix for others)</li>
+                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">values</code> - Values to evaluate against. Multiple values use "OR" operation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="notification error" id="errorNotification"></div>
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Converting policy...</p>
+    </div>
+
+    <div class="notification error">
+        <div class="notification-content">
+            <span class="notification-icon">⚠️</span>
+            <span class="notification-message"></span>
+            <span class="notification-close">✕</span>
+        </div>
+    </div>
+
+    <div class="notification success">
+        <div class="notification-content">
+            <span class="notification-icon">✓</span>
+            <span class="notification-message"></span>
+            <span class="notification-close">✕</span>
+        </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
@@ -713,20 +1048,48 @@ ${resourceStatements}
             }
         }
 
-        document.getElementById('convertBtn').addEventListener('click', () => {
-            const result = convertToHCL(inputEditor.getValue());
+        document.getElementById('convertBtn').addEventListener('click', async () => {
+            try {
+                const loadingSpinner = document.querySelector('.loading-spinner');
+                loadingSpinner.classList.add('active');
 
-            if (typeof result === 'string' && result.startsWith('Error')) {
-                showError(result.replace('Error converting policy: ', ''));
-                return;
+                const inputPolicy = inputEditor.getValue();
+                
+                // Validate JSON
+                try {
+                    JSON.parse(inputPolicy);
+                } catch (e) {
+                    throw new Error('Invalid JSON format. Please check your input.');
+                }
+
+                // Convert policy (existing conversion logic)
+                const policyDoc = convertToHCL(inputPolicy);
+                const resource = policyDoc.jsonEncodeVersion;
+
+                policyDocEditor.setValue(policyDoc.policyDocVersion);
+                resourceEditor.setValue(resource);
+
+                const successNotification = document.querySelector('.notification.success');
+                successNotification.querySelector('.notification-message').textContent = 'Policy converted successfully!';
+                successNotification.classList.add('active');
+
+                // Hide after 5 seconds
+                setTimeout(() => {
+                    successNotification.classList.remove('active');
+                }, 5000);
+            } catch (error) {
+                const errorNotification = document.querySelector('.notification.error');
+                errorNotification.querySelector('.notification-message').textContent = error.message;
+                errorNotification.classList.add('active');
+
+                // Hide after 5 seconds
+                setTimeout(() => {
+                    errorNotification.classList.remove('active');
+                }, 5000);
+            } finally {
+                const loadingSpinner = document.querySelector('.loading-spinner');
+                loadingSpinner.classList.remove('active');
             }
-
-            // Format and set HCL output
-            const formattedDoc = formatHcl(result.policyDocVersion);
-            const formattedResource = formatHcl(result.jsonEncodeVersion);
-
-            policyDocEditor.setValue(formattedDoc);
-            resourceEditor.setValue(formattedResource);
         });
 
         document.getElementById('copyPolicyDocBtn').addEventListener('click', () => {
@@ -767,9 +1130,9 @@ ${resourceStatements}
                     <a href="privacy-policy.html">Privacy Policy</a>
                     <a href="terms.html">Terms of Service</a>
                     <a href="https://akarat.xyz">About Me</a>
-                    <a href="https://github.com/bohrasd">GitHub</a>
-                    <a href="https://twitter.com/leoric_ring">Twitter</a>
-                    <a href="https://www.linkedin.com/in/bohr-%E5%BC%A0%E5%93%B2%E6%BA%90-72604484/">LinkedIn</a>
+                    <a href="https://github.com/bohrasd" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a href="https://twitter.com/leoric_ring" target="_blank" rel="noopener noreferrer">Twitter</a>
+                    <a href="https://www.linkedin.com/in/bohr-%E5%BC%A0%E5%93%B2%E6%BA%90-72604484/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
                 </div>
                 <p>&copy; 2024 Akarat Tools. All rights reserved.</p>
             </div>

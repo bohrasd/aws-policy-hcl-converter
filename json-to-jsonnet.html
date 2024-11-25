@@ -472,6 +472,121 @@
                 font-size: 0.9rem;
             }
         }
+
+        /* Cheatsheet Styles */
+        .cheatsheet-section {
+            margin-top: 3rem;
+            padding: 2rem 0;
+            background: #f8f9fa;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cheatsheet-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            background-size: 200% auto;
+            animation: gradient 15s ease infinite;
+        }
+
+        .cheatsheet-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .cheatsheet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .cheatsheet-item {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .cheatsheet-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .cheatsheet-item h3 {
+            font-family: var(--font-heading);
+            color: #333;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid;
+            border-image: var(--primary-gradient) 1;
+        }
+
+        .cheatsheet-item pre {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .cheatsheet-item code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .cheatsheet-item p {
+            color: #666;
+            margin: 0.5rem 0;
+            line-height: 1.6;
+            font-family: var(--font-body);
+        }
+
+        .cheatsheet-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .cheatsheet-header h2 {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--text-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% auto;
+            animation: shine 5s linear infinite;
+        }
+
+        .cheatsheet-header p {
+            font-family: var(--font-body);
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .cheatsheet-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cheatsheet-header h2 {
+                font-size: 2rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -507,6 +622,181 @@
                 <button onclick="convertToJsonnet()">Convert to Jsonnet</button>
                 <button onclick="convertToJsonnetWithParams()">Convert with Parameters</button>
                 <button class="copy-button" onclick="copyToClipboard()">Copy Output</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cheatsheet-section">
+        <div class="cheatsheet-container">
+            <div class="cheatsheet-header">
+                <h2>Jsonnet Cheatsheet</h2>
+                <p>A comprehensive guide to Jsonnet's powerful features and common patterns</p>
+            </div>
+            
+            <div class="cheatsheet-grid">
+                <div class="cheatsheet-item">
+                    <h3>Variables and Local Bindings</h3>
+                    <pre><code>// Local variables
+local name = 'Alice';
+local age = 25;
+
+{
+  person: {
+    name: name,
+    age: age,
+  },
+}
+
+// Local block
+{
+  local service = {
+    name: 'web',
+    port: 8080,
+  },
+  deployment: {
+    name: service.name,
+    containerPort: service.port,
+  },
+}</code></pre>
+                </div>
+
+                <div class="cheatsheet-item">
+                    <h3>Functions and Parameters</h3>
+                    <pre><code>// Basic function
+local greeting(name) = 'Hello ' + name;
+
+// Function with default parameters
+local createPod(name, image='nginx:latest') = {
+  apiVersion: 'v1',
+  kind: 'Pod',
+  metadata: {
+    name: name,
+  },
+  spec: {
+    containers: [{
+      name: name,
+      image: image,
+    }],
+  },
+};</code></pre>
+                </div>
+
+                <div class="cheatsheet-item">
+                    <h3>Object Composition</h3>
+                    <pre><code>// Object merging
+local base = {
+  name: 'app',
+  replicas: 1,
+};
+
+local override = {
+  replicas: 3,
+  image: 'nginx',
+};
+
+// Merge with override
+local result = base + override;
+
+// Hidden fields
+{
+  local privateVar = 'hidden',
+  publicVar: 'visible',
+}</code></pre>
+                </div>
+
+                <div class="cheatsheet-item">
+                    <h3>Arrays and Comprehension</h3>
+                    <pre><code>// Array comprehension
+local numbers = [1, 2, 3, 4, 5];
+local doubled = [x * 2 for x in numbers];
+
+// Conditional comprehension
+local evens = [
+  x for x in numbers
+  if x % 2 == 0
+];
+
+// Object comprehension
+local users = ['alice', 'bob'];
+{
+  [name + '_role']: 'user'
+  for name in users
+}</code></pre>
+                </div>
+
+                <div class="cheatsheet-item">
+                    <h3>Conditionals and Error Handling</h3>
+                    <pre><code>// If expressions
+local status = if uptime > 90 then 'healthy' else 'degraded';
+
+// Error handling
+local divide(a, b) =
+  if b == 0 then
+    error 'Division by zero'
+  else
+    a / b;
+
+// Assert statements
+{
+  name: 'app',
+  replicas: assert replicas > 0 : 'Replicas must be positive'; replicas,
+}</code></pre>
+                </div>
+
+                <div class="cheatsheet-item">
+                    <h3>Imports and Libraries</h3>
+                    <pre><code>// Import files
+local config = import 'config.jsonnet';
+local lib = import 'lib.libsonnet';
+
+// Import multiple files
+local k = import 'k.libsonnet';
+local utils = import 'utils.libsonnet';
+
+{
+  deployment: k.deployment.new(name='web', image='nginx'),
+  service: k.service.new(name='web', port=80),
+}</code></pre>
+                </div>
+
+                <div class="cheatsheet-item">
+                    <h3>String Formatting</h3>
+                    <pre><code>// String concatenation
+local name = 'web';
+local fullName = name + '-service';
+
+// String formatting
+local template = 'Hello %s!';
+local greeting = std.format(template, ['World']);
+
+// Multiline strings
+local yaml = |||
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: %s
+|||;</code></pre>
+                </div>
+
+                <div class="cheatsheet-item">
+                    <h3>Common Patterns</h3>
+                    <pre><code>// Environment configuration
+local env = std.extVar('env');
+local config = {
+  dev: { replicas: 1 },
+  prod: { replicas: 3 },
+};
+
+// Template functions
+local makeService(name, port) = {
+  apiVersion: 'v1',
+  kind: 'Service',
+  metadata: { name: name },
+  spec: {
+    ports: [{ port: port }],
+  },
+};</code></pre>
+                </div>
             </div>
         </div>
     </div>
