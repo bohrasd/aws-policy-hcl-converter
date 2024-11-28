@@ -162,14 +162,34 @@
             background: white;
         }
 
-        .copy-button {
+        .copy-button, .upload-button {
             position: absolute;
+            padding: 4px 8px;
+            background: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+            color: #333;
+        }
+
+        .copy-button {
             top: 10px;
             right: 10px;
-            padding: 4px 8px;
-            font-size: 12px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border: 1px solid var(--border-color);
+        }
+
+        .upload-button {
+            top: 10px;
+            right: 70px;
+        }
+
+        .copy-button:hover, .upload-button:hover {
+            background: #e9ecef;
+        }
+
+        .file-input {
+            display: none;
         }
 
         .diff-container {
@@ -247,7 +267,6 @@
             flex-grow: 1;
             display: flex;
             gap: 20px;
-            margin-right: 270px;
             width: 100%;
         }
 
@@ -538,14 +557,17 @@
             Compare Kubernetes YAML files with automatic sorting and intelligent grouping by api-version, kind, and namespace. 
             This free online tool helps you easily identify changes between k8s manifests with smart diff highlighting.
         </p>
-        <div class="sort-info">Resources are automatically sorted by: apiVersion → kind → namespace → name</div>
         <div class="input-grid">
             <div class="yaml-input">
                 <textarea id="yaml1" placeholder="Paste your first Kubernetes YAML here..." onpaste="handlePaste(event, 'yaml1')"></textarea>
+                <input type="file" id="file1" class="file-input" accept=".yaml,.yml">
+                <button class="upload-button" onclick="document.getElementById('file1').click()">Upload</button>
                 <button class="copy-button" onclick="copyToClipboard('yaml1')">Copy</button>
             </div>
             <div class="yaml-input">
                 <textarea id="yaml2" placeholder="Paste your second Kubernetes YAML here..." onpaste="handlePaste(event, 'yaml2')"></textarea>
+                <input type="file" id="file2" class="file-input" accept=".yaml,.yml">
+                <button class="upload-button" onclick="document.getElementById('file2').click()">Upload</button>
                 <button class="copy-button" onclick="copyToClipboard('yaml2')">Copy</button>
             </div>
         </div>
@@ -601,6 +623,21 @@
                 textarea.value = sortedYaml;
             }, 0);
         }
+
+        function handleFileSelect(event, targetId) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById(targetId).value = e.target.result;
+                    compareYaml();
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        document.getElementById('file1').addEventListener('change', (e) => handleFileSelect(e, 'yaml1'));
+        document.getElementById('file2').addEventListener('change', (e) => handleFileSelect(e, 'yaml2'));
 
         function compareYaml() {
             try {
