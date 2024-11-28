@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Kubernetes YAML Diff Tool | Compare K8s YAML Files | Semantic Diff Viewer</title>
-    <meta name="description" content="Free online Kubernetes YAML diff tool. Compare K8s YAML files with semantic sorting by api-resources and name. Easily navigating between resources with difference.">
-    <meta name="keywords" content="kubernetes yaml diff, k8s yaml compare, online yaml differ, yaml comparison tool, semantic yaml diff, kubernetes config compare, yaml viewer, k8s configuration diff">
-    <meta property="og:title" content="Online Kubernetes YAML Diff Tool | Compare K8s YAML Files">
-    <meta property="og:description" content="Free online tool to compare and diff Kubernetes YAML files with semantic sorting. Easy-to-use YAML viewer and differ for K8s configurations.">
+    <meta name="description" content="Free online Kubernetes YAML diff tool that automatically sorts and compares k8s resources by api-version, kind, and namespace. Compare k8s manifests with intelligent grouping and highlighting.">
+    <meta name="keywords" content="kubernetes, k8s, yaml diff, yaml compare, kubernetes manifest, k8s resources, yaml comparison tool, kubernetes yaml, k8s manifest diff, api-resources, online diff tool">
+    <meta name="author" content="Akarat Tools">
+    <meta property="og:title" content="Kubernetes YAML Diff - Online K8s Resource Comparison Tool">
+    <meta property="og:description" content="Compare Kubernetes YAML files online with automatic sorting by api-resources. Smart diff tool that groups and highlights changes in k8s manifests by api-version, kind, and namespace.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://akarat-tools.xyz/k8s-yaml-diff.html">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Online Kubernetes YAML Diff Tool">
-    <meta name="twitter:description" content="Compare K8s YAML files with semantic sorting. Free online YAML differ and viewer.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Kubernetes YAML Diff - Online K8s Resource Comparison Tool">
+    <meta name="twitter:description" content="Compare Kubernetes YAML files online with automatic sorting by api-resources. Smart diff tool that groups and highlights changes in k8s manifests.">
+    <title>Kubernetes YAML Diff - Online K8s Resource Comparison Tool | Akarat Tools</title>
     <link rel="canonical" href="https://akarat-tools.xyz/k8s-yaml-diff.html">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Online Kubernetes YAML Diff Tool",
+      "name": "Kubernetes YAML Diff",
       "url": "https://akarat-tools.xyz/k8s-yaml-diff.html",
-      "description": "Free online Kubernetes YAML diff tool. Compare K8s YAML files with semantic sorting by api-resources and name. Easily navigating between resources with difference.",
+      "description": "Free online Kubernetes YAML diff tool that automatically sorts and compares k8s resources by api-version, kind, and namespace.",
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "Any",
       "browserRequirements": "Requires JavaScript",
@@ -319,10 +321,18 @@
         }
 
         .nav-header {
-            background-color: #333;
+            background: linear-gradient(135deg, #326ce5 0%, #1a73e8 100%);
             color: white;
             padding: 1rem;
-            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-header:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .nav-container {
@@ -338,6 +348,27 @@
             text-decoration: none;
             font-size: 1.2rem;
             font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-brand:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-brand::before {
+            content: '⎈';
+            font-size: 1.4rem;
+            animation: spin 20s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .nav-links {
@@ -347,18 +378,143 @@
         }
 
         .nav-link {
-            color: white;
+            color: rgba(255, 255, 255, 0.9);
             text-decoration: none;
-            transition: color 0.2s;
+            transition: all 0.2s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(100%);
+            transition: transform 0.2s ease;
+            z-index: -1;
         }
 
         .nav-link:hover {
-            color: #ccc;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .nav-link:hover::before {
+            transform: translateY(0);
         }
 
         .nav-link.active {
-            color: #fff;
-            font-weight: bold;
+            color: white;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { width: 0; opacity: 0; }
+            to { width: 20px; opacity: 1; }
+        }
+
+        /* Footer Styles */
+        .site-footer {
+            background: #f8f9fa;
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: #666;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            position: relative;
+            padding: 0.3rem 0;
+        }
+
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--primary-color);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-links a:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .site-footer p {
+            text-align: center;
+            color: #666;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .footer-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23326ce5' fill-opacity='0.05' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
+            background-size: 1440px 50px;
+            opacity: 0.5;
+            animation: wave 20s linear infinite;
+        }
+
+        @keyframes wave {
+            from { background-position-x: 0; }
+            to { background-position-x: 1440px; }
         }
     </style>
 </head>
@@ -377,7 +533,11 @@
         </nav>
     </header>
     <div class="container">
-        <h1>Kubernetes YAML Diff</h1>
+        <h1>Kubernetes YAML Diff - Online K8s Resource Comparison Tool</h1>
+        <p class="lead">
+            Compare Kubernetes YAML files with automatic sorting and intelligent grouping by api-version, kind, and namespace. 
+            This free online tool helps you easily identify changes between k8s manifests with smart diff highlighting.
+        </p>
         <div class="sort-info">Resources are automatically sorted by: apiVersion → kind → namespace → name</div>
         <div class="input-grid">
             <div class="yaml-input">
@@ -455,47 +615,194 @@
                 const sortedYaml1 = sortK8sYaml(yaml1);
                 const sortedYaml2 = sortK8sYaml(yaml2);
 
-                // Split into resources (separated by ---)
-                const resources1 = sortedYaml1.split('---\n').filter(r => r.trim());
-                const resources2 = sortedYaml2.split('---\n').filter(r => r.trim());
+                // Parse resources into objects with metadata
+                const parseResources = (yamlStr) => {
+                    const resources = yamlStr.split('---\n').filter(r => r.trim());
+                    return resources.map(resource => {
+                        try {
+                            const yaml = jsyaml.load(resource);
+                            return {
+                                content: resource,
+                                apiVersion: yaml.apiVersion || '',
+                                kind: yaml.kind || '',
+                                namespace: yaml.metadata?.namespace || 'default',
+                                name: yaml.metadata?.name || '',
+                                key: `${yaml.apiVersion || ''}-${yaml.kind || ''}-${yaml.metadata?.namespace || 'default'}-${yaml.metadata?.name || ''}`
+                            };
+                        } catch (e) {
+                            console.error('Error parsing resource:', e);
+                            return null;
+                        }
+                    }).filter(r => r !== null);
+                };
 
-                const showEquivalent = document.getElementById('showEquivalent').checked;
+                const resources1 = parseResources(sortedYaml1);
+                const resources2 = parseResources(sortedYaml2);
 
-                // Create the diff view
-                const diffOutput = document.getElementById('diffOutput');
+                // Create maps for quick lookup
+                const resourceMap1 = new Map(resources1.map(r => [r.key, r]));
+                const resourceMap2 = new Map(resources2.map(r => [r.key, r]));
 
-                // Find different resources and their differing lines
-                const resourceDiffs = resources1.map((resource1, index) => {
-                    if (index >= resources2.length) return { isDifferent: true, lines: null };
-                    const resource2 = resources2[index];
-                    const lines1 = resource1.split('\n');
-                    const lines2 = resource2.split('\n');
+                // Find all unique keys
+                const allKeys = new Set([...resourceMap1.keys(), ...resourceMap2.keys()]);
+
+                // Compare resources and create diff info
+                const resourceDiffs = Array.from(allKeys).map(key => {
+                    const resource1 = resourceMap1.get(key);
+                    const resource2 = resourceMap2.get(key);
+
+                    if (!resource1) {
+                        // Resource only exists in the second YAML
+                        return {
+                            isDifferent: true,
+                            type: 'added',
+                            content: resource2.content,
+                            apiVersion: resource2.apiVersion,
+                            kind: resource2.kind,
+                            namespace: resource2.namespace,
+                            name: resource2.name
+                        };
+                    }
+
+                    if (!resource2) {
+                        // Resource only exists in the first YAML
+                        return {
+                            isDifferent: true,
+                            type: 'removed',
+                            content: resource1.content,
+                            apiVersion: resource1.apiVersion,
+                            kind: resource1.kind,
+                            namespace: resource1.namespace,
+                            name: resource1.name
+                        };
+                    }
+
+                    // Both resources exist, compare line by line
+                    const lines1 = resource1.content.split('\n');
+                    const lines2 = resource2.content.split('\n');
                     const lineDiffs = lines1.map((line, i) => i >= lines2.length || line !== lines2[i]);
                     const isDifferent = lineDiffs.some(diff => diff);
 
-                    // Extract resource kind and name for navigation
-                    let kind = '', name = '';
-                    try {
-                        const yaml = jsyaml.load(resource1);
-                        kind = yaml.kind || '';
-                        name = yaml.metadata?.name || '';
-                    } catch (e) {}
-
-                    return { isDifferent, lines: lineDiffs, kind, name };
+                    return {
+                        isDifferent,
+                        type: 'modified',
+                        lines: lineDiffs,
+                        content1: resource1.content,
+                        content2: resource2.content,
+                        apiVersion: resource1.apiVersion,
+                        kind: resource1.kind,
+                        namespace: resource1.namespace,
+                        name: resource1.name
+                    };
                 });
 
-                // Create navigation items
-                const navItems = resourceDiffs.map((diff, index) => {
-                    if (!showEquivalent && !diff.isDifferent) return '';
-                    const label = diff.kind && diff.name ?
-                        `${diff.kind}/${diff.name}` :
-                        `Resource ${index + 1}`;
-                    return `<div class="nav-item ${diff.isDifferent ? 'has-diff' : ''}"
-                                onclick="document.getElementById('resource-${index}').scrollIntoView({behavior: 'smooth'})">
-                            ${escapeHtml(label)}
+                // Group resources by apiVersion, kind, and namespace
+                const groupedResources = {};
+                resourceDiffs.forEach((diff, index) => {
+                    if (!document.getElementById('showEquivalent').checked && !diff.isDifferent) return;
+                    
+                    const apiKey = diff.apiVersion || 'Unknown';
+                    const kindKey = diff.kind || 'Unknown';
+                    const nsKey = diff.namespace;
+
+                    if (!groupedResources[apiKey]) {
+                        groupedResources[apiKey] = {};
+                    }
+                    if (!groupedResources[apiKey][kindKey]) {
+                        groupedResources[apiKey][kindKey] = {};
+                    }
+                    if (!groupedResources[apiKey][kindKey][nsKey]) {
+                        groupedResources[apiKey][kindKey][nsKey] = [];
+                    }
+                    groupedResources[apiKey][kindKey][nsKey].push({ ...diff, index });
+                });
+
+                // Create navigation items with apiVersion grouping
+                const navItems = Object.entries(groupedResources).map(([apiVersion, kinds]) => {
+                    const apiItems = Object.entries(kinds).map(([kind, namespaces]) => {
+                        const kindItems = Object.entries(namespaces).map(([namespace, resources]) => {
+                            const resourceItems = resources.map(diff => {
+                                const label = diff.name || `Resource ${diff.index + 1}`;
+                                const diffClass = diff.type === 'added' ? 'diff-added' : 
+                                                diff.type === 'removed' ? 'diff-removed' : 
+                                                diff.isDifferent ? 'has-diff' : '';
+                                return `<div class="nav-item ${diffClass}"
+                                            onclick="document.getElementById('resource-${diff.index}').scrollIntoView({behavior: 'smooth'})">
+                                        ${escapeHtml(label)}
+                                    </div>`;
+                            }).join('');
+                            
+                            return `<div class="namespace-group">
+                                    <div class="namespace-label">${escapeHtml(namespace)}</div>
+                                    ${resourceItems}
+                                </div>`;
+                        }).join('');
+
+                        return `<div class="kind-group">
+                                <div class="kind-label">${escapeHtml(kind)}</div>
+                                ${kindItems}
+                            </div>`;
+                    }).join('');
+
+                    return `<div class="api-group">
+                            <div class="api-label">${escapeHtml(apiVersion)}</div>
+                            ${apiItems}
                         </div>`;
                 }).join('');
 
+                // Add CSS for new grouping elements
+                const styleElement = document.createElement('style');
+                styleElement.textContent = `
+                    .api-group {
+                        margin-bottom: 1.5rem;
+                    }
+                    .api-label {
+                        font-weight: bold;
+                        color: #1a73e8;
+                        padding: 4px 8px;
+                        background: #f8f9fa;
+                        border-bottom: 1px solid var(--border-color);
+                        font-size: 1.1em;
+                    }
+                    .kind-group {
+                        margin: 0.5rem 0;
+                        margin-left: 8px;
+                    }
+                    .kind-label {
+                        font-weight: bold;
+                        color: var(--primary-color);
+                        padding: 4px 8px;
+                    }
+                    .namespace-group {
+                        margin-left: 16px;
+                    }
+                    .namespace-label {
+                        font-size: 0.9em;
+                        color: #666;
+                        padding: 2px 8px;
+                    }
+                    .nav-item {
+                        margin-left: 16px;
+                        padding: 2px 8px;
+                        cursor: pointer;
+                    }
+                    .nav-item:hover {
+                        background: #f0f0f0;
+                    }
+                    .diff-added {
+                        color: #28a745;
+                    }
+                    .diff-removed {
+                        color: #dc3545;
+                    }
+                    .has-diff {
+                        color: #ffc107;
+                    }
+                `;
+                document.head.appendChild(styleElement);
+
+                // Create the diff view
+                const diffOutput = document.getElementById('diffOutput');
                 diffOutput.innerHTML = `
                     <div class="diff-container">
                         <div class="diff-nav">
@@ -508,44 +815,70 @@
                         </div>
                         <div class="diff-view">
                             <div class="diff-column">
-                                ${resources1.map((resource, resourceIndex) => {
-                                    const { isDifferent, lines: lineDiffs } = resourceDiffs[resourceIndex];
-                                    if (!showEquivalent && !isDifferent) return '';
+                                ${resourceDiffs.map((diff, index) => {
+                                    if (!document.getElementById('showEquivalent').checked && !diff.isDifferent) return '';
 
-                                    const resourceLines = resource.split('\n');
-                                    return `<div id="resource-${resourceIndex}" class="resource-anchor">
-                                        ${resourceLines.map((line, lineIndex) => {
-                                            const isLineDifferent = lineDiffs ? lineDiffs[lineIndex] : true;
-                                            return `<div class="diff-line ${isLineDifferent ? 'diff-removed' : ''}">${escapeHtml(line)}</div>`;
+                                    // For added resources, show empty lines matching the right column
+                                    if (diff.type === 'added') {
+                                        const rightLines = diff.content.split('\n');
+                                        return `<div id="resource-${index}" class="resource-anchor">
+                                            ${rightLines.map(() => `<div class="diff-line"></div>`).join('')}
+                                            ${index < resourceDiffs.length - 1 ? '<div class="diff-line">---</div>' : ''}
+                                        </div>`;
+                                    }
+
+                                    const content = diff.type === 'removed' ? diff.content : diff.content1;
+                                    const lines = content.split('\n');
+                                    const otherLines = (diff.type === 'removed' ? [] : diff.content2.split('\n'));
+                                    const maxLines = Math.max(lines.length, otherLines.length);
+                                    const lineDiffs = diff.type === 'removed' ? lines.map(() => true) : diff.lines;
+
+                                    return `<div id="resource-${index}" class="resource-anchor">
+                                        ${Array.from({length: maxLines}, (_, i) => {
+                                            if (i >= lines.length) {
+                                                return `<div class="diff-line"></div>`;
+                                            }
+                                            const isLineDifferent = lineDiffs[i];
+                                            return `<div class="diff-line ${isLineDifferent ? 'diff-removed' : ''}">${escapeHtml(lines[i])}</div>`;
                                         }).join('')}
-                                        ${resourceIndex < resources1.length - 1 ? '<div class="diff-line">---</div>' : ''}
+                                        ${index < resourceDiffs.length - 1 ? '<div class="diff-line">---</div>' : ''}
                                     </div>`;
                                 }).join('')}
                             </div>
                             <div class="diff-column">
-                                ${resources2.map((resource, resourceIndex) => {
-                                    const isDifferent = resourceIndex >= resources1.length ||
-                                        resource.trim() !== resources1[resourceIndex].trim();
-                                    if (!showEquivalent && !isDifferent) return '';
+                                ${resourceDiffs.map((diff, index) => {
+                                    if (!document.getElementById('showEquivalent').checked && !diff.isDifferent) return '';
 
-                                    const lines1 = resourceIndex < resources1.length ?
-                                        resources1[resourceIndex].split('\n') : [];
-                                    const lines2 = resource.split('\n');
+                                    // For removed resources, show empty lines matching the left column
+                                    if (diff.type === 'removed') {
+                                        const leftLines = diff.content.split('\n');
+                                        return `<div id="resource-${index}-right" class="resource-anchor">
+                                            ${leftLines.map(() => `<div class="diff-line"></div>`).join('')}
+                                            ${index < resourceDiffs.length - 1 ? '<div class="diff-line">---</div>' : ''}
+                                        </div>`;
+                                    }
 
-                                    return `<div id="resource-${resourceIndex}-right">
-                                        ${lines2.map((line, lineIndex) => {
-                                            const isLineDifferent = lineIndex >= lines1.length ||
-                                                line !== lines1[lineIndex];
-                                            return `<div class="diff-line ${isLineDifferent ? 'diff-added' : ''}">${escapeHtml(line)}</div>`;
+                                    const content = diff.type === 'added' ? diff.content : diff.content2;
+                                    const lines = content.split('\n');
+                                    const otherLines = (diff.type === 'added' ? [] : diff.content1.split('\n'));
+                                    const maxLines = Math.max(lines.length, otherLines.length);
+                                    const lineDiffs = diff.type === 'added' ? lines.map(() => true) : lines.map((line, i) => i >= otherLines.length || line !== otherLines[i]);
+
+                                    return `<div id="resource-${index}-right" class="resource-anchor">
+                                        ${Array.from({length: maxLines}, (_, i) => {
+                                            if (i >= lines.length) {
+                                                return `<div class="diff-line"></div>`;
+                                            }
+                                            const isLineDifferent = lineDiffs[i];
+                                            return `<div class="diff-line ${isLineDifferent ? 'diff-added' : ''}">${escapeHtml(lines[i])}</div>`;
                                         }).join('')}
-                                        ${resourceIndex < resources2.length - 1 ? '<div class="diff-line">---</div>' : ''}
+                                        ${index < resourceDiffs.length - 1 ? '<div class="diff-line">---</div>' : ''}
                                     </div>`;
                                 }).join('')}
                             </div>
                         </div>
                     </div>
                 `;
-
                 diffOutput.style.display = 'block';
                 document.getElementById('error').textContent = '';
 
@@ -597,6 +930,7 @@
                 <p>&copy; 2024 Akarat Tools. All rights reserved.</p>
             </div>
         </div>
+        <div class="footer-wave"></div>
     </footer>
 </body>
 </html>
