@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online Tailscale ACL visualization tool that generates interactive diagrams from your ACL configurations. Visualize groups, tags, and access rules with Mermaid.js graphs.">
+    <meta name="keywords" content="tailscale, acl visualizer, acl diagram, access control list, network visualization, mermaid.js, tailscale configuration, network security, acl graph">
+    <meta name="author" content="Akarat Tools">
+    <meta property="og:title" content="Tailscale ACL Visualizer - Interactive Network Access Diagram Tool">
+    <meta property="og:description" content="Generate interactive diagrams from Tailscale ACL configurations. Visualize groups, tags, and access rules with clear, organized graphs. Free online tool for network administrators.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://akarat-tools.xyz/tailscale-acl-viz.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Tailscale ACL Visualizer - Interactive Network Access Diagram Tool">
+    <meta name="twitter:description" content="Generate interactive diagrams from Tailscale ACL configurations. Visualize your network access rules with clear, organized graphs.">
+    <title>Tailscale ACL Visualizer - Interactive Network Access Diagram Tool | Akarat Tools</title>
+    <link rel="canonical" href="https://akarat-tools.xyz/tailscale-acl-viz.html">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Tailscale ACL Visualizer",
+      "url": "https://akarat-tools.xyz/tailscale-acl-viz.html",
+      "description": "Free online tool to visualize Tailscale ACL configurations with interactive diagrams.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Interactive diagram generation",
+        "Group and tag visualization",
+        "SSH rule highlighting",
+        "Port-based coloring",
+        "Client-side processing"
+      ]
+    }
+    </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6PDQBCN90Z"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-6PDQBCN90Z');
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .nav-header {
+            background-color: white;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+        .nav-link {
+            color: #4a90e2;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .nav-link:hover {
+            background-color: #f0f7ff;
+        }
+        .nav-link.active {
+            background-color: #4a90e2;
+            color: white;
+        }
+        .site-footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        .footer-links a {
+            color: #4a90e2;
+            text-decoration: none;
+        }
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .input-container {
+            display: flex;
+            gap: 30px;
+            margin: 20px 0;
+            align-items: flex-start;
+        }
+        .input-section {
+            flex: 1;
+            min-width: 0; /* Prevent flex items from overflowing */
+        }
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .tab-button {
+            padding: 8px 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+        .tab-button.active {
+            background: #007bff;
+            color: white;
+            border-color: #0056b3;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        textarea {
+            width: 100%;
+            height: 300px;
+            margin: 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: vertical;
+            background: #fafafa;
+            box-sizing: border-box; /* Include padding in width calculation */
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+        }
+        .readonly {
+            background-color: #f8f9fa;
+            color: #555;
+            cursor: default;
+        }
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin: 10px 5px;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #357abd;
+        }
+        button.tab-button {
+            background-color: white;
+            color: #4a90e2;
+            border: 1px solid #4a90e2;
+            margin: 0 5px;
+        }
+        button.tab-button:hover {
+            background-color: #f0f7ff;
+        }
+        button.tab-button.active {
+            background-color: #4a90e2;
+            color: white;
+            border-color: #4a90e2;
+        }
+        #mermaidOutput {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 4px;
+        }
+        .error {
+            color: #dc3545;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #dc3545;
+            border-radius: 4px;
+            display: none;
+        }
+        h2 {
+            margin: 0 0 15px 0;
+            font-size: 1.2em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header class="nav-header">
+        <nav class="nav-container">
+            <a href="index.html" class="nav-link">AWS Policy Converter</a>
+            <a href="clash-extractor.html" class="nav-link">Clash Extractor</a>
+            <a href="json-to-jsonnet.html" class="nav-link">JSON to Jsonnet</a>
+            <a href="yaml-navigator.html" class="nav-link">YAML Navigator</a>
+            <a href="k8s-yaml-diff.html" class="nav-link">K8s YAML Diff</a>
+            <a href="hcl-to-json.html" class="nav-link">HCL to JSON</a>
+            <a href="tailscale-acl-viz.html" class="nav-link active">ACL Visualizer</a>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>Tailscale ACL Visualizer</h1>
+        <div class="input-container">
+            <div class="input-section">
+                <h2>Input: Tailscale ACL (HUJSON)</h2>
+                <div class="tab-buttons">
+                    <button class="tab-button" onclick="generateDiagram()">Generate Diagram</button>
+                </div>
+                <textarea id="aclInput" placeholder="Paste your Tailscale ACL (HUJSON format) here..." spellcheck="false">{
+  "groups": {
+    "group:engineering": [
+      "alice@example.com"
+    ],
+    "group:finance": [
+      "bob@example.com"
+    ],
+    "group:legal": [
+      "carl@example.com"
+    ]
+  },
+  "ssh": [
+    {
+      "action": "check",
+      "src": [
+        "autogroup:member"
+      ],
+      "dst": [
+        "tag:internal"
+      ],
+      "users": [
+        "autogroup:nonroot",
+        "root"
+      ]
+    }
+  ],
+  "acls": [
+    {
+      "action": "accept",
+      "src": [
+        "group:engineering"
+      ],
+      "dst": [
+        "tag:engineering:*"
+      ]
+    },
+    {
+      "action": "accept",
+      "src": [
+        "group:finance"
+      ],
+      "dst": [
+        "tag:finance:80"
+      ]
+    },
+    {
+      "action": "accept",
+      "src": [
+        "group:legal"
+      ],
+      "dst": [
+        "tag:legal:5432"
+      ]
+    },
+    {
+      "action": "accept",
+      "src": [
+        "autogroup:member"
+      ],
+      "dst": [
+        "tag:internal:22"
+      ]
+    }
+  ],
+  "tagOwners": {
+    "tag:engineering": [
+      "autogroup:admin"
+    ],
+    "tag:finance": [
+      "autogroup:admin"
+    ],
+    "tag:legal": [
+      "autogroup:admin"
+    ],
+    "tag:internal": [
+      "autogroup:admin"
+    ]
+  }
+}</textarea>
+            </div>
+            <div class="input-section">
+                <h2>Generated Mermaid Code</h2>
+                <div class="tab-buttons">
+                    <button class="tab-button" onclick="switchTab('groups')">Groups</button>
+                    <button class="tab-button active" onclick="switchTab('acls')">ACLs</button>
+                </div>
+                <div id="groupsTab" class="tab-content">
+                    <textarea id="mermaidGroupsCode" class="readonly" readonly placeholder="Groups diagram code will appear here..." spellcheck="false"></textarea>
+                </div>
+                <div id="aclsTab" class="tab-content active">
+                    <textarea id="mermaidAclsCode" class="readonly" readonly placeholder="ACLs diagram code will appear here..." spellcheck="false"></textarea>
+                </div>
+            </div>
+        </div>
+        <div id="errorMsg" class="error"></div>
+        <div id="mermaidOutput"></div>
+    </div>
+    <footer class="site-footer">
+        <p>Built with ❤️ using Mermaid.js</p>
+        <div class="footer-links">
+            <a href="privacy-policy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+    </footer>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+
+        // Add paste event listener
+        document.getElementById('aclInput').addEventListener('paste', function() {
+            // Use setTimeout to get the pasted content after the paste event
+            setTimeout(visualizeACL, 0);
+        });
+
+        function parseHujson(text) {
+            // Remove comments and handle trailing commas
+            function removeComments(str) {
+                // Remove single-line comments
+                str = str.replace(/\/\/.*$/gm, '');
+                // Remove multi-line comments
+                str = str.replace(/\/\*[\s\S]*?\*\//g, '');
+                return str;
+            }
+
+            function fixTrailingCommas(str) {
+                // Fix trailing commas in objects
+                str = str.replace(/,(\s*[}\]])/g, '$1');
+                return str;
+            }
+
+            function addQuotesToKeys(str) {
+                // Add quotes to unquoted keys
+                return str.replace(/(\{|\,)\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\:/g, '$1"$2":');
+            }
+
+            try {
+                // First try to parse as regular JSON
+                return JSON.parse(text);
+            } catch (e) {
+                try {
+                    // Clean up HUJSON
+                    let cleanJson = text;
+                    cleanJson = removeComments(cleanJson);
+                    cleanJson = addQuotesToKeys(cleanJson);
+                    cleanJson = fixTrailingCommas(cleanJson);
+                    
+                    // Parse the cleaned JSON
+                    return JSON.parse(cleanJson);
+                } catch (error) {
+                    throw new Error('Invalid HUJSON format: ' + error.message);
+                }
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMsg');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('errorMsg').style.display = 'none';
+        }
+
+        function generateGroupsDiagram(acl) {
+            let mermaidCode = 'graph LR\n';
+            const groups = new Set();
+            const hosts = new Set();
+
+            // Process groups
+            if (acl.groups) {
+                Object.entries(acl.groups).forEach(([groupName, groupData]) => {
+                    if (Array.isArray(groupData)) {
+                        groupData.forEach(host => {
+                            mermaidCode += `    ${groupName.replace(/[^a-zA-Z0-9]/g, '_')}["👥 ${groupName}"] -.->|member| ${host.replace(/[^a-zA-Z0-9]/g, '_')}["${host}"]\n`;
+                            hosts.add(host);
+                            groups.add(groupName);
+                        });
+                    }
+                });
+            }
+
+            // Add styling
+            mermaidCode += '\n    classDef group fill:#f9f,stroke:#333,stroke-width:2px;\n';
+            mermaidCode += '    classDef host fill:#bbf,stroke:#333,stroke-width:1px;\n';
+
+            // Apply classes
+            groups.forEach(group => {
+                mermaidCode += `    class ${group.replace(/[^a-zA-Z0-9]/g, '_')} group;\n`;
+            });
+            hosts.forEach(host => {
+                mermaidCode += `    class ${host.replace(/[^a-zA-Z0-9]/g, '_')} host;\n`;
+            });
+
+            return mermaidCode;
+        }
+
+        function generateAclsDiagram(acl) {
+            let mermaidCode = 'graph LR\n';
+            const nodes = new Set();
+            // Track SSH permissions for groups
+            const sshPermissions = new Map();
+
+            // Helper function to strip port from destination
+            function stripPort(dst) {
+                const colonIndex = dst.lastIndexOf(':');
+                // Only strip if it's a port number after the colon
+                if (colonIndex !== -1 && /^\d+$/.test(dst.substring(colonIndex + 1))) {
+                    return dst.substring(0, colonIndex);
+                }
+                return dst;
+            }
+
+            // Helper function to get port from destination
+            function getPort(dst) {
+                const colonIndex = dst.lastIndexOf(':');
+                if (colonIndex !== -1 && /^\d+$/.test(dst.substring(colonIndex + 1))) {
+                    return dst.substring(colonIndex + 1);
+                }
+                return null;
+            }
+
+            // Helper function to get destination type and emoji
+            function getDestInfo(dst) {
+                const port = getPort(dst);
+                if (!port) return { type: 'other', emoji: '', label: dst };
+
+                if (port === '22') {
+                    return {
+                        type: 'ssh',
+                        emoji: '🖥️',
+                        label: dst.replace(`:${port}`, ` ${port} 🖥️`)
+                    };
+                }
+                if (port === '80' || port === '443') {
+                    return {
+                        type: 'web',
+                        emoji: '🌐',
+                        label: dst.replace(`:${port}`, ` ${port} 🌐`)
+                    };
+                }
+                if (['1521', '3389', '5432'].includes(port)) {
+                    return {
+                        type: 'db',
+                        emoji: '🗄️',
+                        label: dst.replace(`:${port}`, ` ${port} 🗄️`)
+                    };
+                }
+                return { type: 'other', emoji: '', label: dst };
+            }
+
+            // Process SSH rules first to build permission map
+            if (acl.ssh) {
+                // Handle array of SSH rules with src/dst/users format
+                if (Array.isArray(acl.ssh)) {
+                    acl.ssh.forEach(rule => {
+                        if (rule.src && rule.dst && rule.users && 
+                            Array.isArray(rule.src) && Array.isArray(rule.dst) && Array.isArray(rule.users)) {
+                            rule.src.forEach(src => {
+                                rule.dst.forEach(dst => {
+                                    const key = `${src}:${dst}`;
+                                    sshPermissions.set(key, true);
+                                });
+                            });
+                        }
+                    });
+                }
+            }
+
+            // Helper function to check SSH permission
+            function checkSshPermission(src, dst) {
+                // Strip port from destination when checking SSH permissions
+                const strippedDst = stripPort(dst);
+                const key = `${src}:${strippedDst}`;
+                return sshPermissions.has(key);
+            }
+
+            // Helper function to get source type
+            function getSourceType(node) {
+                if (node.startsWith('group:')) return 'group';
+                if (node.startsWith('tag:')) return 'tag';
+                return 'other';
+            }
+
+            // Helper function to create node IDs and labels
+            function createNodeInfo(node, isSource = false) {
+                const nodeId = node.replace(/[^a-zA-Z0-9]/g, '_');
+                let nodeLabel = node;
+                let nodeType = 'other';
+                
+                // Handle wildcards
+                if (node === '*' || node === '*:*') {
+                    return {
+                        id: 'ANY',
+                        label: '((ANY))',
+                        isWildcard: true,
+                        type: 'wildcard'
+                    };
+                }
+                
+                // Handle ports with wildcards (e.g., tag:dev:*)
+                if (node.endsWith(':*')) {
+                    nodeLabel = node.replace(':*', ' (any port)');
+                }
+
+                // Add emoji and type for source nodes
+                if (isSource) {
+                    if (node.startsWith('group:')) {
+                        nodeLabel = node.replace('group:', '👥 group:');
+                        nodeType = 'group';
+                    } else if (node.startsWith('tag:')) {
+                        nodeLabel = node.replace('tag:', '💻 tag:');
+                        nodeType = 'tag';
+                    }
+                } else {
+                    // Add emoji and type for destination nodes
+                    const destInfo = getDestInfo(node);
+                    nodeLabel = destInfo.label;
+                    nodeType = destInfo.type;
+                }
+                
+                return {
+                    id: nodeId,
+                    label: nodeLabel,
+                    isWildcard: false,
+                    type: nodeType
+                };
+            }
+
+            // Process ACLs
+            if (acl.acls) {
+                // Handle array of ACL rules
+                if (Array.isArray(acl.acls)) {
+                    acl.acls.forEach(rule => {
+                        if (rule.src && rule.dst && Array.isArray(rule.src) && Array.isArray(rule.dst)) {
+                            rule.src.forEach(src => {
+                                rule.dst.forEach(dst => {
+                                    const srcInfo = createNodeInfo(src, true);
+                                    const dstInfo = createNodeInfo(dst, false);
+                                    
+                                    // Check if this connection has SSH permission
+                                    const hasSsh = checkSshPermission(src, dst);
+                                    // Only show SSH if destination port is 22
+                                    const showSsh = hasSsh && dst.endsWith(':22');
+                                    const line = showSsh ? '-.->|ssh|' : '-->|accept|';
+                                    
+                                    mermaidCode += `    ${srcInfo.id}["${srcInfo.label}"] ${line} ${dstInfo.id}["${dstInfo.label}"]\n`;
+                                    nodes.add(['src', src, srcInfo]);
+                                    if (!dstInfo.isWildcard) {
+                                        nodes.add(['dst', dst, dstInfo]);
+                                    }
+                                });
+                            });
+                        }
+                    });
+                } else {
+                    // Handle object-based ACL rules (legacy format)
+                    Object.entries(acl.acls).forEach(([source, rules]) => {
+                        if (Array.isArray(rules)) {
+                            // Handle simple allow rules
+                            rules.forEach(dst => {
+                                const srcInfo = createNodeInfo(source, true);
+                                const dstInfo = createNodeInfo(dst, false);
+                                
+                                // Check if this connection has SSH permission
+                                const hasSsh = checkSshPermission(source, dst);
+                                // Only show SSH if destination port is 22
+                                const showSsh = hasSsh && dst.endsWith(':22');
+                                const line = showSsh ? '-.->|ssh|' : '-->|accept|';
+                                
+                                mermaidCode += `    ${srcInfo.id}["${srcInfo.label}"] ${line} ${dstInfo.id}["${dstInfo.label}"]\n`;
+                                nodes.add(['src', source, srcInfo]);
+                                if (!dstInfo.isWildcard) {
+                                    nodes.add(['dst', dst, dstInfo]);
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+
+            // Add styling
+            mermaidCode += '\n    classDef src_group fill:#f9f,stroke:#333,stroke-width:2px;\n';
+            mermaidCode += '    classDef src_tag fill:#ffd700,stroke:#333,stroke-width:2px;\n';
+            mermaidCode += '    classDef src_other fill:#f9f,stroke:#333,stroke-width:2px;\n';
+            mermaidCode += '    classDef dst_ssh fill:#98FB98,stroke:#333,stroke-width:2px;\n';
+            mermaidCode += '    classDef dst_web fill:#87CEEB,stroke:#333,stroke-width:2px;\n';
+            mermaidCode += '    classDef dst_db fill:#DDA0DD,stroke:#333,stroke-width:2px;\n';
+            mermaidCode += '    classDef dst_other fill:#bbf,stroke:#333,stroke-width:1px;\n';
+            mermaidCode += '    classDef wildcard fill:#ff6b6b,stroke:#333,stroke-width:2px;\n';
+
+            // Apply classes
+            nodes.forEach(([type, _, nodeInfo]) => {
+                if (type === 'src') {
+                    mermaidCode += `    class ${nodeInfo.id} src_${nodeInfo.type};\n`;
+                } else {
+                    mermaidCode += `    class ${nodeInfo.id} dst_${nodeInfo.type};\n`;
+                }
+            });
+            if (mermaidCode.includes('ANY')) {
+                mermaidCode += '    class ANY wildcard;\n';
+            }
+
+            return mermaidCode;
+        }
+
+        function switchTab(tabName) {
+            // Update button states
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+                if (button.textContent.toLowerCase() === tabName) {
+                    button.classList.add('active');
+                }
+            });
+
+            // Update content visibility
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName + 'Tab').classList.add('active');
+
+            // Re-generate diagram with current tab
+            visualizeACL();
+        }
+
+        async function visualizeACL() {
+            hideError();
+            const inputText = document.getElementById('aclInput').value;
+            
+            try {
+                const aclData = parseHujson(inputText);
+                
+                // Generate and display groups diagram
+                const groupsMermaidCode = generateGroupsDiagram(aclData);
+                document.getElementById('mermaidGroupsCode').value = groupsMermaidCode;
+                
+                // Generate and display ACLs diagram
+                const aclsMermaidCode = generateAclsDiagram(aclData);
+                document.getElementById('mermaidAclsCode').value = aclsMermaidCode;
+                
+                // Display the active diagram
+                const activeTab = document.querySelector('.tab-button.active').textContent.toLowerCase();
+                const mermaidCode = activeTab === 'groups' ? groupsMermaidCode : aclsMermaidCode;
+                
+                const outputDiv = document.getElementById('mermaidOutput');
+                outputDiv.innerHTML = `<pre class="mermaid">${mermaidCode}</pre>`;
+                
+                await mermaid.run();
+            } catch (error) {
+                showError(`Error: ${error.message}`);
+            }
+        }
+
+        async function generateDiagram() {
+            visualizeACL();
+        }
+    </script>
+</body>
+</html>
