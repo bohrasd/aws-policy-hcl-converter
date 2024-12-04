@@ -3,26 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWS IAM Policy to Terraform HCL Converter | Free Online Tool</title>
+    <meta name="description" content="Free online tool to convert AWS IAM policies to Terraform HCL format. Transform JSON policies to HCL with examples. Convert JSON to HCL for AWS resources and IAM policies. Instant conversion with syntax highlighting.">
+    <meta name="keywords" content="aws policy to terraform hcl, convert json to hcl, aws policy to hcl example, terraform aws policy, iam policy converter, json to hcl converter, aws iam policy document, terraform hcl conversion">
+    <meta property="og:title" content="Convert AWS Policy to Terraform HCL | JSON to HCL Converter">
+    <meta property="og:description" content="Free online tool to convert AWS IAM policies to Terraform HCL. See examples of JSON to HCL conversion for AWS policies. Instant conversion with syntax highlighting.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://akarat-tools.xyz/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Convert AWS Policy to Terraform HCL | JSON to HCL Converter">
+    <meta name="twitter:description" content="Free online tool to convert AWS IAM policies to Terraform HCL. Transform JSON policies with examples and syntax highlighting.">
+    <title>Convert AWS Policy to Terraform HCL | JSON to HCL Converter | Free Online Tool</title>
+    <link rel="canonical" href="https://akarat-tools.xyz/">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="alternate icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAF0WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4yLWMwMDAgNzkuMWI2NWE3OWI0LCAyMDIyLzA2LzEzLTIyOjAxOjAxICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjQuMCAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMjMtMDctMjBUMTU6MzQ6NDctMDc6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjMt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">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <meta name="description" content="Free online tool to convert AWS IAM Policy JSON to Terraform HCL format. Supports both aws_iam_policy_document and jsonencode formats. Perfect for DevOps and Cloud Engineers.">
-    <meta name="keywords" content="AWS IAM Policy, Terraform HCL, JSON to HCL, Policy Converter, AWS Infrastructure as Code, DevOps Tools, Cloud Infrastructure, IAM Policy Document, Terraform AWS Provider">
     <meta name="author" content="AWS Policy Converter">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#ffffff">
-    <meta property="og:title" content="AWS IAM Policy to Terraform HCL Converter">
-    <meta property="og:description" content="Convert AWS IAM Policies to Terraform HCL format instantly. Free online tool for DevOps engineers.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://akarat-tools.xyz/aws-policy-converter">
     <meta property="og:image" content="https://akarat-tools.xyz/og-image.png">
     <meta property="og:site_name" content="Akarat Tools">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AWS IAM Policy to Terraform HCL Converter">
-    <meta name="twitter:description" content="Convert AWS IAM policies between JSON and Terraform HCL formats. Free online tool for AWS policy conversion.">
     <link rel="canonical" href="https://akarat-tools.xyz">
     <link rel="icon" type="image/png" href="favicon.png">
     <!-- Google tag (gtag.js) -->
@@ -598,8 +599,9 @@
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "AWS IAM Policy to Terraform HCL Converter",
-      "description": "Free online tool to convert AWS IAM Policy JSON to Terraform HCL format. Supports both aws_iam_policy_document and jsonencode formats.",
+      "name": "AWS Policy to Terraform HCL Converter",
+      "url": "https://akarat-tools.xyz/",
+      "description": "Free online tool to convert AWS IAM policies from JSON format to Terraform HCL. Features JSON to HCL conversion with examples and syntax highlighting.",
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "Any",
       "offers": {
@@ -608,37 +610,15 @@
         "priceCurrency": "USD"
       },
       "featureList": [
-        "Convert AWS IAM Policy JSON to Terraform HCL",
-        "Support for aws_iam_policy_document data source",
-        "Support for jsonencode format",
-        "Syntax highlighting",
-        "Error validation",
-        "Instant conversion"
-      ]
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "AWS Policy Converter",
-      "url": "https://akarat-tools.xyz/index.html",
-      "description": "Free online tool to convert AWS IAM policies between JSON and YAML formats. Easy-to-use converter for AWS policy documents.",
-      "applicationCategory": "DeveloperApplication",
-      "operatingSystem": "Any",
-      "browserRequirements": "Requires JavaScript",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "featureList": [
-        "JSON to YAML conversion",
-        "YAML to JSON conversion",
-        "AWS IAM policy support",
-        "Client-side processing",
-        "Instant conversion"
-      ]
+        "Convert AWS IAM policies to Terraform HCL",
+        "JSON to HCL conversion with examples",
+        "Syntax highlighting and validation",
+        "AWS policy document formatting",
+        "Terraform aws_iam_policy_document support",
+        "Pattern matching and wildcards support"
+      ],
+      "keywords": "aws policy to terraform hcl, convert json to hcl, aws policy to hcl example, terraform aws policy, iam policy converter",
+      "sameAs": "https://akarat-tools.xyz/"
     }
     </script>
 </head>
