@@ -905,18 +905,35 @@
             // Define fields that should be treated as strings
             const stringFields = ['Sid', 'Effect'];
 
-            // Handle all fields except Condition and Principal
             Object.entries(stmt).forEach(([key, value]) => {
-                if (key !== 'Condition' && key !== 'Principal' && key !== 'NotPrincipal') {
-                    const fieldName = forPolicyDoc ? pluralize(key).toLowerCase() : key;
+                if (key === 'Condition' || key === 'Principal' || key === 'NotPrincipal') {
+                    return; // Skip these, they are handled later
+                }
 
-                    if (stringFields.includes(key)) {
-                        // Handle string fields
-                        block += `${indent}${fieldName} = "${value}"\n`;
-                    } else if (Array.isArray(value)) {
-                        // Handle array fields (Action, Resource, etc.)
+                const fieldName = forPolicyDoc ? pluralize(key).toLowerCase() : key;
+                const isResourceOrActionType = ['Resource', 'NotResource', 'Action', 'NotAction'].includes(key);
+
+                if (stringFields.includes(key)) { // Sid, Effect
+                    block += `${indent}${fieldName} = "${value}"\n`;
+                } else if (isResourceOrActionType) {
+                    if (Array.isArray(value)) {
                         block += `${indent}${fieldName} = ${formatArrayValue(value, indent.length)}\n`;
+                    } else { // Value is a string
+                        if (forPolicyDoc) {
+                            // For policy doc, these fields always expect a list
+                            block += `${indent}${fieldName} = ${formatArrayValue([value], indent.length)}\n`;
+                        } else {
+                            // For resource HCL, it's a direct string assignment
+                            block += `${indent}${fieldName} = "${value}"\n`;
+                        }
                     }
+                } else if (Array.isArray(value)) { // Handles any other potential array types
+                    block += `${indent}${fieldName} = ${formatArrayValue(value, indent.length)}\n`;
+                } else { 
+                    // Fallback for any other string type fields not explicitly handled,
+                    // though most policy fields are either string or array or structured objects.
+                    // This might need adjustment if other specific string fields exist.
+                    block += `${indent}${fieldName} = "${value}"\n`;
                 }
             });
 
