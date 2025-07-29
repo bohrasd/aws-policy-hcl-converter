@@ -1,655 +1,780 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Free online tool to convert AWS IAM policies to Terraform HCL format. Transform JSON policies to HCL with examples. Convert JSON to HCL for AWS resources and IAM policies. Instant conversion with syntax highlighting.">
-    <meta name="keywords" content="aws policy to terraform hcl, convert json to hcl, aws policy to hcl example, terraform aws policy, iam policy converter, json to hcl converter, aws iam policy document, terraform hcl conversion">
-    <meta property="og:title" content="Convert AWS Policy to Terraform HCL | JSON to HCL Converter">
-    <meta property="og:description" content="Free online tool to convert AWS IAM policies to Terraform HCL. See examples of JSON to HCL conversion for AWS policies. Instant conversion with syntax highlighting.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://akarat-tools.xyz/">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Convert AWS Policy to Terraform HCL | JSON to HCL Converter">
-    <meta name="twitter:description" content="Free online tool to convert AWS IAM policies to Terraform HCL. Transform JSON policies with examples and syntax highlighting.">
-    <title>Convert AWS Policy to Terraform HCL | JSON to HCL Converter | Free Online Tool</title>
-    <link rel="canonical" href="https://akarat-tools.xyz/">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="alternate icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAF0WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4yLWMwMDAgNzkuMWI2NWE3OWI0LCAyMDIyLzA2LzEzLTIyOjAxOjAxICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjQuMCAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMjMtMDctMjBUMTU6MzQ6NDctMDc6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjMtMDctMjBUMTU6MzQ6NDctMDc6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDIzLTA3LTIwVDE1OjM0OjQ3LTA3OjAwIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjA1MGZiMjY0LWVkOWUtNDM5Mi1hOWU4LTU2MmM2ZDQ4ZjYzYiIgeG1wTU06RG9jdW1lbnRJRD0iYWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOjA1MGZiMjY0LWVkOWUtNDM5Mi1hOWU4LTU2MmM2ZDQ4ZjYzYiIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOjA1MGZiMjY0LWVkOWUtNDM5Mi1hOWU4LTU2MmM2ZDQ4ZjYzYiIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJjcmVhdGVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjA1MGZiMjY0LWVkOWUtNDM5Mi1hOWU4LTU2MmM2ZDQ4ZjYzYiIgc3RFdnQ6d2hlbj0iMjAyMy0wNy0yMFQxNTozNDo0Ny0wNzowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDI0LjAgKE1hY2ludG9zaCkiLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+YjqezwAABOhJREFUWIW1l21sU2UYx3/3dLd3W7uNrRvb2I0xNgYIDAcYQoLGDzLCB/SDiSa8JEQgvhA0JIbEGP2gH4xf/GCMiTEhwYgJGgEjIZIYwYiZbMpwjKhj3cb2truWtbe3L6c9fmhv19Lu5QX+SZM+z3me8/yf+z73f55zr6BSqZiPnE4nAGq1GoCRkREADAYDAAqFAoCpqSkAtFotABMTEwAYjUYAxsbGADAYDMzMzAAQCoUAMJvNAMRiMQDMZjOJRAKA0dFRAKxWK/F4HICRkREsFguJRAKVSgWAWq0mHo8DoNFoABgfHwdAp9MxPT0NgEajIZlMAmA2m0kmk6hUKtRqNQDJZBKtVotCoSCVSgGg0+lQKBSkUimUSiUAU1NTKJVKVCoViUQCAL1ej1KpJJlMotPpAIhGowAYjUYAIpEIABaLBYBwOAyA1WoFIBQKAWCz2QAIBoMAOBwOAPx+PwBOpxMAn88HgMvlAsDr9QLgdrsB8Hg8ADQ0NADg8XgAWLhwIQCXL18GYNGiRQBcunQJgMWLFwNw8eJFAJYsWQLAhQsXAFi6dCkA58+fB2DZsmUAnDt3DoDly5cDcPbsWQBWrFgBwJkzZwBYuXIlAKdPnwZg1apVAJw6dQqA1atXA3Dy5EkA1qxZA8CJEycAWLt2LQDHjx8HYN26dQAcO3YMgPXr1wNw9OhRADZs2ADA4cOHAdi4cSMAhw4dAmDTpk0AHDx4EIDNmzcDcODAAQC2bNkCwP79+wHYunUrAPv27ZsA7B7924Adu7cCcCuXbsA2LFjBwA7duwAYMeOHQDs3LkTgO3btwOwa9cuALZt2wbAnj17ANi6dSsA+/btA2DLli0A7N+/H4DNmzcDcODAAQA2bdoEwKFDhwDYuHEjAIcPHwZgw4YNABw9ehSAdevWAXDs2DEA1q5dC8CJEycAWL16NQCnTp0CYNWqVQCcPn0agJUrVwJw5swZAFasWAHA2bNnAVi+fDkA586dA2DZsmUAXLhwAYAlS5YAcPHiRQAWL14MwKVLlwBYtGgRAB6PBwCXywWA1+sFwO12A+DxeABwOp0A+Hw+AFwuFwB+vx8Ah8MBQDAYBMBmswEQCoUAsFqtAITDYQAsFgsAkUgEAKPRCEA0GgVAr9cDkEgkUCqVqFQqkskk/0mpVJJKpVAoFABMTUwAYjUYAxsbGADAYDMzMzAAQCoUAMJvNAMRiMQDMZjOJRAKA0dFRAKxWK/F4HICRkREsFguJRAKVSgWAWq0mHo8DoNFoABgfHwdAp9MxPT0NgEajIZlMAmA2m0kmk6hUKtRqNQDJZBKtVotCoSCVSgGg0+lQKBSkUimUSiUAU1NTKJVKVCoViUQCAL1ej1KpJJlMotPpAIhGowAYjUYAIpEIABaLBYBwOAyA1WoFIBQKAWCz2QAIBoMAOBwOAPx+PwBOpxMAn88HgMvlAsDr9QLgdrsB8Hg8ADQ0NADg8XgAWLhwIQCXL18GYNGiRQBcunQJgMWLFwNw8eJFAJYsWQLAhQsXAFi6dCkA58+fB2DZsmUAnDt3DoDly5cDcPbsWQBWrFgBwJkzZwBYuXIlAKdPnwZg1apVAJw6dQqA1atXA3Dy5EkA1qxZA8CJEycAWLt2LQDHjx8HYN26dQAcO3YMgPXr1wNw9OhRADZs2ADA4cOHAdi4cSMAhw4dAmDTpk0AHDx4EIDNmzcDcODAAQC2bNkCwP79+wHYunUrAPv27ZsA7B7924Adu7cCcCuXbsA2LFjBwA7duwAYMeOHQDs3LkTgO3btwOwa9cuALZt2wbAnj17ANi6dSsA+/btA2DLli0A7N+/H4DNmzcDcODAAQA2bdoEwKFDhwDYuHEjAIcPHwZgw4YNABw9ehSAdevWAXDs2DEA1q5dC8CJEycAWL16NQCnTp0CYNWqVQCcPn0agJUrVwJw5swZAFasWAHA2bNnAVi+fDkA586dA2DZsmUAXLhwAYAlS5YAcPHiRQAWL14MwKVLlwBYtGgRAB6PBwCXywWA1+sFwO12A+DxeABwOp0A+Hw+AFwuFwB+vx8Ah8MBQDAYBMBmswEQCoUAsFqtAITDYQAsFgsAkUgEAKPRCEA0GgVAr9cDkEgkUCqVqFQqkskk/0mpVJJKpVAoFABMTU2hVCpRqVQkEgkAdDodSqWSZDKJVqsFYHx8HACNRkM6nQZAr9czMzMDgMFgIJFIAGA2m0kmkwCYTCYSiQQAer2eVCoFgFarJZVKAaDRaEin0wDodDqmp6cB0Gg0JJNJAMxmM8lkEpVKhVqtBiCZTKLVagEYHx8HQKfTMT09DYBGoyGZTAJgNpsBiMViABiNRgDGxsYAMBgMAMzMzACgVqsZGRkBwGq1Eo/HARgZGcFisZBIJFCpVACoVCri8TgAWq0WgImJCQCMRiMTExMAGAwGZmZmAAgGgwCYzWYAotEoACaTiXg8DoDJZCIejwOg1+tJp9MAaDQa0uk0AHq9nunpaQB0Oh2pVAoArVZLKpUCQKPRkE6nAdDpdExPTwOg0WhIJpMAWCwWkskkarUatVoNQDKZRKvVolAoSKVSAOh0OhQKBalUCqVSCcDU1BRKpRKVSkUikQBAr9ejVCpJJpNotVoAxsfHAdBoNKTTaQD0ej0zMzP/AErtm5H96QvXAAAAAElFTkSuQmCC">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <meta name="author" content="AWS Policy Converter">
-    <meta name="robots" content="index, follow">
-    <meta name="theme-color" content="#ffffff">
-    <meta property="og:image" content="https://akarat-tools.xyz/og-image.png">
-    <meta property="og:site_name" content="Akarat Tools">
-    <link rel="canonical" href="https://akarat-tools.xyz">
-    <link rel="icon" type="image/png" href="favicon.png">
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6PDQBCN90Z"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-6PDQBCN90Z');
-    </script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --header-height: 80px;
-            --primary-color: #6366f1;
-            --secondary-color: #47b4f3;
-            --accent-color: #818cf8;
-            --background-gradient: linear-gradient(135deg, #f0f4ff 0%, #e5e7ff 100%);
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
-            --success-color: #22c55e;
-            --error-color: #ef4444;
-            --nav-color-1: #6366f1;
-            --nav-color-2: #8b5cf6;
-            --nav-color-3: #ec4899;
-            --nav-color-4: #14b8a6;
-            --nav-color-5: #f59e0b;
-            --nav-color-6: #ef4444;
-        }
-
-        body {
-            background: var(--background-gradient);
-            color: var(--text-primary);
-            min-height: 100vh;
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        }
-
-        .nav-header {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            height: var(--header-height);
-            transition: all 0.3s ease;
-        }
-
-        .nav-header:hover {
-            background: rgba(255, 255, 255, 0.95);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .nav-brand {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            color: black;
-            text-decoration: none;
-            font-weight: 700;
-            transition: all 0.3s ease;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            position: relative;
-        }
-
-        .nav-brand::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            transition: width 0.3s ease;
-        }
-
-        .nav-brand:hover::after {
-            width: 100%;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav-link {
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            position: relative;
-            overflow: hidden;
-            color: var(--text-secondary);
-        }
-
-        .nav-link.active {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .nav-link:hover {
-            color: white !important;
-        }
-
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: -1;
-            border-radius: 0.5rem;
-        }
-
-        .nav-link:nth-child(1)::before { background: var(--nav-color-1); }
-        .nav-link:nth-child(2)::before { background: var(--nav-color-2); }
-        .nav-link:nth-child(3)::before { background: var(--nav-color-3); }
-        .nav-link:nth-child(4)::before { background: var(--nav-color-4); }
-        .nav-link:nth-child(5)::before { background: var(--nav-color-5); }
-        .nav-link:nth-child(6)::before { background: var(--nav-color-6); }
-
-        .nav-link:hover::before {
-            opacity: 1;
-        }
-
-        .container {
-            margin-top: calc(var(--header-height) + 2rem);
-            padding: 1rem;
-            max-width: 1500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            line-height: 1.2;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-align: center;
-            animation: gradientFlow 8s ease infinite;
-            background-size: 200% 200%;
-        }
-
-        @keyframes gradientFlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .converter-container {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-radius: 1rem;
-            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.1);
-            padding: 2rem;
-            border: 1px solid rgba(99, 102, 241, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .converter-container:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.15);
-        }
-
-        .CodeMirror {
-            height: 600px;
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            border-radius: 0.5rem;
-            font-family: 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            transition: all 0.3s ease;
-        }
-
-        .CodeMirror:hover {
-            border-color: var(--primary-color);
-        }
-
-        .btn {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: left 0.5s ease;
-            z-index: -1;
-            border-radius: 0.5rem;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
-        .description {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto 2rem;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.8s ease forwards;
-            animation-delay: 0.2s;
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Convert AWS IAM policies from JSON to Terraform HCL format. Free online tool with syntax highlighting, examples, and instant conversion. Transform your infrastructure as code with ease."
+        />
+        <meta
+            name="keywords"
+            content="aws iam policy converter, terraform hcl converter, json to hcl, aws policy terraform, iam policy json to terraform, terraform aws_iam_policy_document, infrastructure as code, aws terraform converter"
+        />
+        <meta
+            property="og:title"
+            content="AWS IAM Policy to Terraform HCL Converter - Free Online Tool"
+        />
+        <meta
+            property="og:description"
+            content="Convert AWS IAM policies from JSON to Terraform HCL format instantly. Free tool with syntax highlighting, examples, and support for aws_iam_policy_document data sources."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://akarat-tools.xyz/" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+            name="twitter:title"
+            content="AWS IAM Policy to Terraform HCL Converter - Free Online Tool"
+        />
+        <meta
+            name="twitter:description"
+            content="Convert AWS IAM policies from JSON to Terraform HCL format instantly. Free tool with syntax highlighting and aws_iam_policy_document support."
+        />
+        <title>
+            AWS IAM Policy to Terraform HCL Converter - JSON to HCL Online Tool
+        </title>
+        <link rel="canonical" href="https://akarat-tools.xyz/" />
+        <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+        <link
+            rel="alternate icon"
+            type="image/png"
+            href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAF0WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4yLWMwMDAgNzkuMWI2NWE3OWI0LCAyMDIyLzA2LzEzLTIyOjAxOjAxICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjQuMCAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMjMtMDctMjBUMTU6MzQ6NDctMDc6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjMt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"
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+        <meta name="author" content="AWS Policy Converter" />
+        <meta
+            name="robots"
+            content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+        />
+        <meta name="theme-color" content="#ffffff" />
+        <meta
+            property="og:image"
+            content="https://akarat-tools.xyz/og-image.png"
+        />
+        <meta property="og:site_name" content="Akarat Tools" />
+        <link rel="canonical" href="https://akarat-tools.xyz" />
+        <link rel="icon" type="image/png" href="favicon.png" />
+        <!-- Google tag (gtag.js) -->
+        <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-6PDQBCN90Z"
+        ></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
             }
-        }
+            gtag("js", new Date());
 
-        .loading-spinner {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.9);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            text-align: center;
-        }
+            gtag("config", "G-6PDQBCN90Z");
+        </script>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+            rel="stylesheet"
+        />
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --header-height: 80px;
+                --primary-color: #6366f1;
+                --secondary-color: #47b4f3;
+                --accent-color: #818cf8;
+                --background-gradient: linear-gradient(
+                    135deg,
+                    #f0f4ff 0%,
+                    #e5e7ff 100%
+                );
+                --text-primary: #1e293b;
+                --text-secondary: #475569;
+                --success-color: #22c55e;
+                --error-color: #ef4444;
+                --nav-color-1: #6366f1;
+                --nav-color-2: #8b5cf6;
+                --nav-color-3: #ec4899;
+                --nav-color-4: #14b8a6;
+                --nav-color-5: #f59e0b;
+                --nav-color-6: #ef4444;
+            }
 
-        .loading-spinner.active {
-            display: block;
-        }
+            body {
+                background: var(--background-gradient);
+                color: var(--text-primary);
+                min-height: 100vh;
+                margin: 0;
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "SF Pro Text",
+                    "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+                    "Helvetica Neue", sans-serif;
+            }
 
-        .spinner {
-            width: 40px;
-            height: 40px;
-            margin: 0 auto 1rem;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
+            .nav-header {
+                background: rgba(255, 255, 255, 0.8);
+                backdrop-filter: blur(10px);
+                border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+                position: fixed;
+                top: 0;
+                width: 100%;
+                z-index: 1000;
+                height: var(--header-height);
+                transition: all 0.3s ease;
+            }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+            .nav-header:hover {
+                background: rgba(255, 255, 255, 0.95);
+            }
 
-        .notification {
-            display: none;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            color: white;
-            font-size: 0.95rem;
-            max-width: 400px;
-            z-index: 1000;
-            animation: slideIn 0.3s ease-out;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+            .nav-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 2rem;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
 
-        .notification.error {
-            background-color: #dc3545;
-        }
+            .nav-brand {
+                font-family: "Playfair Display", serif;
+                font-size: 1.5rem;
+                color: black;
+                text-decoration: none;
+                font-weight: 700;
+                transition: all 0.3s ease;
+                background: linear-gradient(
+                    45deg,
+                    var(--primary-color),
+                    var(--secondary-color)
+                );
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                position: relative;
+            }
 
-        .notification.success {
-            background-color: #28a745;
-        }
+            .nav-brand::after {
+                content: "";
+                position: absolute;
+                bottom: -4px;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: linear-gradient(
+                    45deg,
+                    var(--primary-color),
+                    var(--secondary-color)
+                );
+                transition: width 0.3s ease;
+            }
 
-        .notification.active {
-            display: block;
-        }
+            .nav-brand:hover::after {
+                width: 100%;
+            }
 
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
+            .nav-links {
+                display: flex;
+                gap: 2rem;
+            }
+
+            .nav-link {
+                text-decoration: none;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                padding: 0.5rem 1rem;
+                border-radius: 0.5rem;
+                position: relative;
+                overflow: hidden;
+                color: var(--text-secondary);
+            }
+
+            .nav-link.active {
+                color: var(--text-primary);
+                font-weight: 600;
+            }
+
+            .nav-link:hover {
+                color: white !important;
+            }
+
+            .nav-link::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
                 opacity: 0;
+                transition: opacity 0.3s ease;
+                z-index: -1;
+                border-radius: 0.5rem;
             }
-            to {
-                transform: translateX(0);
+
+            .nav-link:nth-child(1)::before {
+                background: var(--nav-color-1);
+            }
+            .nav-link:nth-child(2)::before {
+                background: var(--nav-color-2);
+            }
+            .nav-link:nth-child(3)::before {
+                background: var(--nav-color-3);
+            }
+            .nav-link:nth-child(4)::before {
+                background: var(--nav-color-4);
+            }
+            .nav-link:nth-child(5)::before {
+                background: var(--nav-color-5);
+            }
+            .nav-link:nth-child(6)::before {
+                background: var(--nav-color-6);
+            }
+
+            .nav-link:hover::before {
                 opacity: 1;
             }
-        }
 
-        .notification-content {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .notification-icon {
-            font-size: 1.25rem;
-        }
-
-        .notification-message {
-            flex-grow: 1;
-            line-height: 1.4;
-        }
-
-        .notification-close {
-            cursor: pointer;
-            opacity: 0.8;
-            transition: opacity 0.2s ease;
-        }
-
-        .notification-close:hover {
-            opacity: 1;
-        }
-
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--error-color);
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-top: 1rem;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            display: none;
-        }
-
-        .success-message {
-            background: rgba(34, 197, 94, 0.1);
-            color: var(--success-color);
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-top: 1rem;
-            border: 1px solid rgba(34, 197, 94, 0.2);
-            display: none;
-        }
-
-        textarea {
-            width: 100%;
-            height: 300px;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            border-radius: 0.5rem;
-            font-family: 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            resize: vertical;
-            transition: all 0.3s ease;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        h3 {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        .btn-container {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 2rem;
-            padding: 1rem 0;
-            position: sticky;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(99, 102, 241, 0.1);
-            z-index: 100;
-        }
-
-        @media (max-width: 768px) {
             .container {
+                margin-top: calc(var(--header-height) + 2rem);
                 padding: 1rem;
+                max-width: 1500px;
+                margin-left: auto;
+                margin-right: auto;
             }
 
             h1 {
-                font-size: 2rem;
+                font-family: "Playfair Display", serif;
+                font-size: 3rem;
+                font-weight: 700;
+                letter-spacing: -0.03em;
+                line-height: 1.2;
+                margin-bottom: 1.5rem;
+                background: linear-gradient(
+                    45deg,
+                    var(--primary-color),
+                    var(--secondary-color)
+                );
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                text-align: center;
+                animation: gradientFlow 8s ease infinite;
+                background-size: 200% 200%;
             }
 
-            .description {
-                font-size: 1rem;
-                padding: 0 1rem;
-            }
-
-            .btn {
-                width: 100%;
-                max-width: 300px;
+            @keyframes gradientFlow {
+                0% {
+                    background-position: 0% 50%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+                100% {
+                    background-position: 0% 50%;
+                }
             }
 
             .converter-container {
-                padding: 1rem;
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(10px);
+                border-radius: 1rem;
+                box-shadow: 0 8px 32px rgba(99, 102, 241, 0.1);
+                padding: 2rem;
+                border: 1px solid rgba(99, 102, 241, 0.1);
+                transition: all 0.3s ease;
             }
-        }
 
-        .tool-description {
-            padding: 2rem 0;
-            background: rgba(255, 255, 255, 0.8);
-        }
+            .converter-container:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 40px rgba(99, 102, 241, 0.15);
+            }
 
-        .description-container {
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-        }
+            .CodeMirror {
+                height: 600px;
+                border: 1px solid rgba(99, 102, 241, 0.2);
+                border-radius: 0.5rem;
+                font-family:
+                    "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono",
+                    "Courier New", monospace;
+                font-size: 14px;
+                line-height: 1.6;
+                transition: all 0.3s ease;
+            }
 
-        .description-content {
-            max-width: 650px;
-            width: 100%;
-        }
+            .CodeMirror:hover {
+                border-color: var(--primary-color);
+            }
 
-        .description-text {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin: 0.5rem 0;
-        }
+            .btn {
+                background: linear-gradient(
+                    45deg,
+                    var(--primary-color),
+                    var(--secondary-color)
+                );
+                color: white;
+                border: none;
+                padding: 0.75rem 1.5rem;
+                border-radius: 0.5rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
 
-        .description-list {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            list-style-type: none;
-            padding: 1rem 0;
-            margin: 0;
-        }
+            .btn::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+                transition: left 0.5s ease;
+                z-index: -1;
+                border-radius: 0.5rem;
+            }
 
-        .description-list li {
-            margin-bottom: 1.5rem;
-            padding: 1rem 1.5rem;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+            }
 
-        .description-list li:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+            .btn:hover::before {
+                left: 100%;
+            }
 
-        .description-list li strong {
-            color: var(--text-primary);
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
+            .description {
+                font-family: "Playfair Display", serif;
+                font-size: 1.1rem;
+                line-height: 1.6;
+                color: var(--text-secondary);
+                max-width: 700px;
+                margin: 0 auto 2rem;
+                text-align: center;
+                opacity: 0;
+                transform: translateY(20px);
+                animation: fadeInUp 0.8s ease forwards;
+                animation-delay: 0.2s;
+            }
 
-        .description-list li p {
-            margin: 0;
-            line-height: 1.6;
-            color: var(--text-secondary);
-        }
+            @keyframes fadeInUp {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
 
-        .description-section {
-            margin-top: 2rem;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
+            .loading-spinner {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(255, 255, 255, 0.9);
+                padding: 2rem;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+                text-align: center;
+            }
 
-        /* Footer Styles */
-        .site-footer {
-            background: #f8f9fa;
-            padding: 2rem 0;
-            margin-top: 3rem;
-            border-top: 1px solid #eee;
-            font-size: 0.95rem;
-        }
-        
-        .footer-content {
-            text-align: center;
-            color: var(--text-secondary);
-        }
-        
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin: 1rem 0;
-        }
-        
-        .footer-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.2s ease;
-            position: relative;
-        }
-        
-        .footer-links a:hover {
-            color: var(--primary-color);
-        }
-        
-        .footer-links a::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 1px;
-            bottom: -2px;
-            left: 0;
-            background-color: var(--primary-color);
-            transform: scaleX(0);
-            transform-origin: bottom right;
-            transition: transform 0.3s ease;
-        }
-        
-        .footer-links a:hover::after {
-            transform: scaleX(1);
-            transform-origin: bottom left;
-        }
+            .loading-spinner.active {
+                display: block;
+            }
 
-        .footer-content p {
-            margin: 0;
-            opacity: 0.8;
-        }
+            .spinner {
+                width: 40px;
+                height: 40px;
+                margin: 0 auto 1rem;
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid var(--primary-color);
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
 
-        @media (max-width: 768px) {
-            .footer-links {
-                flex-direction: column;
-                gap: 1rem;
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .notification {
+                display: none;
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                color: white;
+                font-size: 0.95rem;
+                max-width: 400px;
+                z-index: 1000;
+                animation: slideIn 0.3s ease-out;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            .notification.error {
+                background-color: #dc3545;
+            }
+
+            .notification.success {
+                background-color: #28a745;
+            }
+
+            .notification.active {
+                display: block;
+            }
+
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+
+            .notification-content {
+                display: flex;
                 align-items: center;
+                gap: 0.75rem;
             }
-        }
-    </style>
-    <!-- JSON-LD structured data for better SEO -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "AWS Policy to Terraform HCL Converter",
-      "url": "https://akarat-tools.xyz/",
-      "description": "Free online tool to convert AWS IAM policies from JSON format to Terraform HCL. Features JSON to HCL conversion with examples and syntax highlighting.",
-      "applicationCategory": "DeveloperApplication",
-      "operatingSystem": "Any",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "featureList": [
-        "Convert AWS IAM policies to Terraform HCL",
-        "JSON to HCL conversion with examples",
-        "Syntax highlighting and validation",
-        "AWS policy document formatting",
-        "Terraform aws_iam_policy_document support",
-        "Pattern matching and wildcards support"
-      ],
-      "keywords": "aws policy to terraform hcl, convert json to hcl, aws policy to hcl example, terraform aws policy, iam policy converter",
-      "sameAs": "https://akarat-tools.xyz/"
-    }
-    </script>
-</head>
-<body>
-    <header class="nav-header">
-        <nav class="nav-container">
-            <a href="https://akarat-tools.xyz" class="nav-brand">Akarat Tools</a>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link active">AWS Policy Converter</a>
-                <a href="json-to-jsonnet.html" class="nav-link">JSON to Jsonnet</a>
-                <a href="hcl-to-json.html" class="nav-link">HCL to JSON</a>
-                <a href="yaml-navigator.html" class="nav-link">YAML Navigator</a>
-                <a href="k8s-yaml-diff.html" class="nav-link">Kubernetes YAML Diff</a>
-                <a href="clash-extractor.html" class="nav-link">Clash Extractor</a>
-                <a href="tailscale-acl-viz.html" class="nav-link">ACL Visualizer</a>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="converter-container">
-                    <h1 class="text-center mb-4">AWS IAM Policy to Terraform HCL Converter</h1>
-                    <div class="description text-center">
-                        Transform your AWS IAM policies into elegant Terraform HCL with precision and ease. Perfect for modern infrastructure as code workflows.
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <h3>Input AWS IAM Policy (JSON)</h3>
-                            <textarea id="inputPolicy" placeholder="Paste your AWS IAM Policy JSON here...">{
+            .notification-icon {
+                font-size: 1.25rem;
+            }
+
+            .notification-message {
+                flex-grow: 1;
+                line-height: 1.4;
+            }
+
+            .notification-close {
+                cursor: pointer;
+                opacity: 0.8;
+                transition: opacity 0.2s ease;
+            }
+
+            .notification-close:hover {
+                opacity: 1;
+            }
+
+            .error-message {
+                background: rgba(239, 68, 68, 0.1);
+                color: var(--error-color);
+                padding: 1rem;
+                border-radius: 0.5rem;
+                margin-top: 1rem;
+                border: 1px solid rgba(239, 68, 68, 0.2);
+                display: none;
+            }
+
+            .success-message {
+                background: rgba(34, 197, 94, 0.1);
+                color: var(--success-color);
+                padding: 1rem;
+                border-radius: 0.5rem;
+                margin-top: 1rem;
+                border: 1px solid rgba(34, 197, 94, 0.2);
+                display: none;
+            }
+
+            textarea {
+                width: 100%;
+                height: 300px;
+                margin-bottom: 1rem;
+                padding: 1rem;
+                border: 1px solid rgba(99, 102, 241, 0.2);
+                border-radius: 0.5rem;
+                font-family:
+                    "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono",
+                    "Courier New", monospace;
+                font-size: 14px;
+                line-height: 1.6;
+                resize: vertical;
+                transition: all 0.3s ease;
+            }
+
+            textarea:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            }
+
+            h3 {
+                color: var(--primary-color);
+                margin-bottom: 1rem;
+                font-family: "Playfair Display", serif;
+                font-weight: 700;
+                font-size: 1rem;
+            }
+
+            .btn-container {
+                display: flex;
+                justify-content: center;
+                gap: 1rem;
+                margin-top: 2rem;
+                padding: 1rem 0;
+                position: sticky;
+                bottom: 0;
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(10px);
+                border-top: 1px solid rgba(99, 102, 241, 0.1);
+                z-index: 100;
+            }
+
+            @media (max-width: 768px) {
+                .container {
+                    padding: 1rem;
+                }
+
+                h1 {
+                    font-size: 2rem;
+                }
+
+                .description {
+                    font-size: 1rem;
+                    padding: 0 1rem;
+                }
+
+                .btn {
+                    width: 100%;
+                    max-width: 300px;
+                }
+
+                .converter-container {
+                    padding: 1rem;
+                }
+            }
+
+            .tool-description {
+                padding: 2rem 0;
+                background: rgba(255, 255, 255, 0.8);
+            }
+
+            .description-container {
+                display: flex;
+                justify-content: center;
+                padding: 20px;
+            }
+
+            .description-content {
+                max-width: 650px;
+                width: 100%;
+            }
+
+            .description-text {
+                font-size: 0.95rem;
+                color: var(--text-secondary);
+                line-height: 1.6;
+                margin: 0.5rem 0;
+            }
+
+            .description-list {
+                font-size: 0.95rem;
+                color: var(--text-secondary);
+                list-style-type: none;
+                padding: 1rem 0;
+                margin: 0;
+            }
+
+            .description-list li {
+                margin-bottom: 1.5rem;
+                padding: 1rem 1.5rem;
+                background: rgba(255, 255, 255, 0.9);
+                border-radius: 12px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
+            }
+
+            .description-list li:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .description-list li strong {
+                color: var(--text-primary);
+                display: block;
+                margin-bottom: 0.5rem;
+                font-size: 1.1rem;
+            }
+
+            .description-list li p {
+                margin: 0;
+                line-height: 1.6;
+                color: var(--text-secondary);
+            }
+
+            .description-section {
+                margin-top: 2rem;
+                background: rgba(255, 255, 255, 0.9);
+                padding: 1.5rem;
+                border-radius: 12px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            }
+
+            /* Footer Styles */
+            .site-footer {
+                background: #f8f9fa;
+                padding: 2rem 0;
+                margin-top: 3rem;
+                border-top: 1px solid #eee;
+                font-size: 0.95rem;
+            }
+
+            .footer-content {
+                text-align: center;
+                color: var(--text-secondary);
+            }
+
+            .footer-links {
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 1.5rem;
+                margin: 1rem 0;
+            }
+
+            .footer-links a {
+                color: var(--text-secondary);
+                text-decoration: none;
+                transition: color 0.2s ease;
+                position: relative;
+            }
+
+            .footer-links a:hover {
+                color: var(--primary-color);
+            }
+
+            .footer-links a::after {
+                content: "";
+                position: absolute;
+                width: 100%;
+                height: 1px;
+                bottom: -2px;
+                left: 0;
+                background-color: var(--primary-color);
+                transform: scaleX(0);
+                transform-origin: bottom right;
+                transition: transform 0.3s ease;
+            }
+
+            .footer-links a:hover::after {
+                transform: scaleX(1);
+                transform-origin: bottom left;
+            }
+
+            .footer-content p {
+                margin: 0;
+                opacity: 0.8;
+            }
+
+            @media (max-width: 768px) {
+                .footer-links {
+                    flex-direction: column;
+                    gap: 1rem;
+                    align-items: center;
+                }
+            }
+        </style>
+        <!-- JSON-LD structured data for better SEO -->
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "WebApplication",
+                "name": "AWS IAM Policy to Terraform HCL Converter",
+                "url": "https://akarat-tools.xyz/",
+                "description": "Convert AWS IAM policies from JSON to Terraform HCL format. Free online tool with syntax highlighting, examples, and support for aws_iam_policy_document data sources.",
+                "applicationCategory": "DeveloperApplication",
+                "operatingSystem": "Any",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD"
+                },
+                "featureList": [
+                    "Convert AWS IAM policies to Terraform HCL format",
+                    "Transform JSON policies to aws_iam_policy_document",
+                    "Real-time syntax highlighting and validation",
+                    "Support for complex policy statements",
+                    "Pattern matching and wildcard conversion",
+                    "Infrastructure as code transformation"
+                ],
+                "keywords": "aws iam policy converter, terraform hcl converter, json to hcl, aws policy terraform, iam policy json to terraform, terraform aws_iam_policy_document",
+                "sameAs": "https://akarat-tools.xyz/"
+            }
+        </script>
+    </head>
+    <body>
+        <header class="nav-header">
+            <nav class="nav-container">
+                <a href="https://akarat-tools.xyz" class="nav-brand"
+                    >Akarat Tools</a
+                >
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link active"
+                        >AWS Policy Converter</a
+                    >
+                    <a href="json-to-jsonnet.html" class="nav-link"
+                        >JSON to Jsonnet</a
+                    >
+                    <a href="hcl-to-json.html" class="nav-link">HCL to JSON</a>
+                    <a href="yaml-navigator.html" class="nav-link"
+                        >YAML Navigator</a
+                    >
+                    <a href="k8s-yaml-diff.html" class="nav-link"
+                        >Kubernetes YAML Diff</a
+                    >
+                    <a href="clash-extractor.html" class="nav-link"
+                        >Clash Extractor</a
+                    >
+                    <a href="tailscale-acl-viz.html" class="nav-link"
+                        >ACL Visualizer</a
+                    >
+                </div>
+            </nav>
+        </header>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="converter-container">
+                        <h1 class="text-center mb-4">
+                            AWS IAM Policy to Terraform HCL Converter
+                        </h1>
+                        <div class="description text-center">
+                            <p>
+                                Convert AWS IAM policies from JSON to Terraform
+                                HCL format instantly. This tool transforms your
+                                policies into
+                                <code>aws_iam_policy_document</code> data
+                                sources, making your infrastructure as code more
+                                maintainable and readable.
+                            </p>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h3>Input AWS IAM Policy (JSON)</h3>
+                                <textarea
+                                    id="inputPolicy"
+                                    placeholder="Paste your AWS IAM Policy JSON here..."
+                                >
+{
     "Version": "2012-10-17",
     "Statement": [
         {
@@ -664,362 +789,843 @@
             ]
         }
     ]
-}</textarea>
+}</textarea
+                                >
+                            </div>
+                            <div class="col-md-4">
+                                <h3>Policy Document HCL</h3>
+                                <textarea
+                                    id="outputPolicyDoc"
+                                    readonly
+                                    placeholder="Policy Document HCL will appear here..."
+                                ></textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <h3>Resource HCL</h3>
+                                <textarea
+                                    id="outputResource"
+                                    readonly
+                                    placeholder="Resource HCL will appear here..."
+                                ></textarea>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <h3>Policy Document HCL</h3>
-                            <textarea id="outputPolicyDoc" readonly placeholder="Policy Document HCL will appear here..."></textarea>
-                        </div>
-                        <div class="col-md-4">
-                            <h3>Resource HCL</h3>
-                            <textarea id="outputResource" readonly placeholder="Resource HCL will appear here..."></textarea>
+
+                        <div class="btn-container">
+                            <button id="convertBtn" class="btn">
+                                Convert Policy
+                            </button>
+                            <button id="copyPolicyDocBtn" class="btn">
+                                Copy Policy Doc
+                            </button>
+                            <button id="copyResourceBtn" class="btn">
+                                Copy Resource
+                            </button>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="tool-description">
+                <div class="description-container">
+                    <div class="description-content">
+                        <h2>
+                            How to Convert AWS IAM Policies to Terraform HCL
+                        </h2>
+                        <p class="description-text">
+                            This converter transforms AWS IAM policy JSON into
+                            Terraform's
+                            <code>aws_iam_policy_document</code> data source
+                            format. Understanding AWS IAM policy elements helps
+                            you create better Terraform configurations:
+                        </p>
+                        <ul class="description-list">
+                            <li>
+                                <strong>Version</strong>
+                                <p>
+                                    Specify the version of the policy language
+                                    that you want to use. We recommend that you
+                                    use the latest 2012-10-17 version. For more
+                                    information, see IAM JSON policy elements:
+                                    Version
+                                </p>
+                            </li>
 
-                    <div class="btn-container">
-                        <button id="convertBtn" class="btn">Convert Policy</button>
-                        <button id="copyPolicyDocBtn" class="btn">Copy Policy Doc</button>
-                        <button id="copyResourceBtn" class="btn">Copy Resource</button>
+                            <li>
+                                <strong>Statement</strong>
+                                <p>
+                                    Use this main policy element as a container
+                                    for the following elements. You can include
+                                    more than one statement in a policy.
+                                </p>
+                            </li>
+
+                            <li>
+                                <strong
+                                    >Sid
+                                    <span
+                                        style="
+                                            color: #666;
+                                            font-size: 0.9em;
+                                            font-weight: normal;
+                                        "
+                                        >(Optional)</span
+                                    ></strong
+                                >
+                                <p>
+                                    Include an optional statement ID to
+                                    differentiate between your statements.
+                                </p>
+                            </li>
+
+                            <li>
+                                <strong>Effect</strong>
+                                <p>
+                                    Use Allow or Deny to indicate whether the
+                                    policy allows or denies access.
+                                </p>
+                            </li>
+
+                            <li>
+                                <strong
+                                    >Principal
+                                    <span
+                                        style="
+                                            color: #666;
+                                            font-size: 0.9em;
+                                            font-weight: normal;
+                                        "
+                                        >(Required in some circumstances)</span
+                                    ></strong
+                                >
+                                <p>
+                                    If you create a resource-based policy, you
+                                    must indicate the account, user, role, or
+                                    federated user to which you would like to
+                                    allow or deny access. If you are creating an
+                                    IAM permissions policy to attach to a user
+                                    or role, you cannot include this element.
+                                    The principal is implied as that user or
+                                    role.
+                                </p>
+                            </li>
+
+                            <li>
+                                <strong>Action</strong>
+                                <p>
+                                    Include a list of actions that the policy
+                                    allows or denies.
+                                </p>
+                            </li>
+
+                            <li>
+                                <strong
+                                    >Resource
+                                    <span
+                                        style="
+                                            color: #666;
+                                            font-size: 0.9em;
+                                            font-weight: normal;
+                                        "
+                                        >(Required in some circumstances)</span
+                                    ></strong
+                                >
+                                <p>
+                                    If you create an IAM permissions policy, you
+                                    must specify a list of resources to which
+                                    the actions apply. If you create a
+                                    resource-based policy, it depends on the
+                                    resource you're using as to whether this
+                                    element is required or not.
+                                </p>
+                            </li>
+
+                            <li>
+                                <strong
+                                    >Condition
+                                    <span
+                                        style="
+                                            color: #666;
+                                            font-size: 0.9em;
+                                            font-weight: normal;
+                                        "
+                                        >(Optional)</span
+                                    ></strong
+                                >
+                                <p>
+                                    Specify the circumstances under which the
+                                    policy grants permission.
+                                </p>
+                            </li>
+                        </ul>
+
+                        <!-- New section for pattern matching -->
+                        <div
+                            style="
+                                margin-top: 30px;
+                                padding-left: 16px;
+                                border-left: 3px solid #e1e4e8;
+                            "
+                        >
+                            <h4 style="color: #24292e">
+                                Pattern Matching in AWS Policies
+                            </h4>
+                            <p style="margin: 0; line-height: 1.6">
+                                AWS IAM policies support pattern matching
+                                through glob-style wildcards and regex-like
+                                syntax:
+                            </p>
+
+                            <div style="margin-top: 15px">
+                                <h5 style="color: #24292e; margin-bottom: 10px">
+                                    Resource Patterns:
+                                </h5>
+                                <ul
+                                    style="
+                                        list-style-type: none;
+                                        padding-left: 0;
+                                    "
+                                >
+                                    <li style="margin-bottom: 8px">
+                                        <code
+                                            style="
+                                                background: #f6f8fa;
+                                                padding: 2px 5px;
+                                            "
+                                            >*</code
+                                        >
+                                        - Matches any combination of characters
+                                    </li>
+                                    <li style="margin-bottom: 8px">
+                                        <code
+                                            style="
+                                                background: #f6f8fa;
+                                                padding: 2px 5px;
+                                            "
+                                            >?</code
+                                        >
+                                        - Matches exactly one character
+                                    </li>
+                                    <li style="margin-bottom: 8px">
+                                        <code
+                                            style="
+                                                background: #f6f8fa;
+                                                padding: 2px 5px;
+                                            "
+                                            >${...}</code
+                                        >
+                                        - Variable substitution (e.g.,
+                                        <code
+                                            style="
+                                                background: #f6f8fa;
+                                                padding: 2px 5px;
+                                            "
+                                            >${aws:username}</code
+                                        >)
+                                    </li>
+                                    <li style="margin-bottom: 8px">
+                                        Example:
+                                        <code
+                                            style="
+                                                background: #f6f8fa;
+                                                padding: 2px 5px;
+                                            "
+                                            >arn:aws:s3:::my-bucket/*</code
+                                        >
+                                        matches all objects in the bucket
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div style="margin-top: 15px">
+                                <h5 style="color: #24292e; margin-bottom: 10px">
+                                    Action Patterns:
+                                </h5>
+                                <ul
+                                    style="
+                                        list-style-type: none;
+                                        padding-left: 0;
+                                    "
+                                >
+                                    <li style="margin-bottom: 8px">
+                                        <code
+                                            style="
+                                                background: #f6f8fa;
+                                                padding: 2px 5px;
+                                            "
+                                            >service:*</code
+                                        >
+                                        - All actions in a service (e.g.,
+                                        <code
+                                            style="
+                                                background: #f6f8fa;
+                                                padding: 2px 5px;
+                                            "
+                                            >s3:*</code
+                                        >)
+                                    </li>
+                                    <li style="margin-bottom: 8px">
+                                        <code
+                                            style="
+                                                background: #f6f8fa;
+                                                padding: 2px 5px;
+                                            "
+                                            >service:action*</code
+                                        >
+                                        - Actions with prefix (e.g.,
+                                        <code
+                                            style="
+                                                background: #f6f8fa;
+                                                padding: 2px 5px;
+                                            "
+                                            >iam:Get*</code
+                                        >)
+                                    </li>
+                                    <li style="margin-bottom: 8px">
+                                        <code
+                                            style="
+                                                background: #f6f8fa;
+                                                padding: 2px 5px;
+                                            "
+                                            >service:*action</code
+                                        >
+                                        - Actions with suffix
+                                    </li>
+                                    <li style="margin-bottom: 8px">
+                                        Example:
+                                        <code
+                                            style="
+                                                background: #f6f8fa;
+                                                padding: 2px 5px;
+                                            "
+                                            >iam:*Role*</code
+                                        >
+                                        matches CreateRole, DeleteRole, etc.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div
+                            style="
+                                margin-top: 30px;
+                                padding-left: 16px;
+                                border-left: 3px solid #e1e4e8;
+                            "
+                        >
+                            <h3 style="color: #24292e">
+                                Terraform aws_iam_policy_document Reference
+                            </h3>
+                            <p>
+                                When converting to Terraform HCL, your JSON
+                                policy becomes a structured
+                                <code>aws_iam_policy_document</code> data source
+                                with the following fields:
+                            </p>
+
+                            <h5 style="color: #24292e; margin: 15px 0 10px">
+                                Top-level Arguments
+                            </h5>
+                            <ul style="list-style-type: none; padding-left: 0">
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >policy_id</code
+                                    >
+                                    (Optional) - An ID for the policy document
+                                </li>
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >source_policy_documents</code
+                                    >
+                                    (Optional) - List of IAM policy documents
+                                    that are merged together
+                                </li>
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >override_policy_documents</code
+                                    >
+                                    (Optional) - List of IAM policy documents
+                                    that override others
+                                </li>
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >version</code
+                                    >
+                                    (Optional) - IAM policy version (2008-10-17
+                                    or 2012-10-17)
+                                </li>
+                            </ul>
+
+                            <h5 style="color: #24292e; margin: 20px 0 10px">
+                                Statement Arguments
+                            </h5>
+                            <p style="margin-bottom: 10px">
+                                The following arguments are optional:
+                            </p>
+                            <ul style="list-style-type: none; padding-left: 0">
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >actions</code
+                                    >
+                                    - List of actions that this statement either
+                                    allows or denies. For example,
+                                    ["ec2:RunInstances", "s3:*"]
+                                </li>
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >effect</code
+                                    >
+                                    - Whether this statement allows or denies
+                                    the given actions. Valid values are Allow
+                                    and Deny
+                                </li>
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >not_actions</code
+                                    >
+                                    - List of actions that this statement does
+                                    not apply to
+                                </li>
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >resources</code
+                                    >
+                                    - List of resource ARNs. Required for IAM
+                                    policies. Conflicts with not_resources
+                                </li>
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >not_resources</code
+                                    >
+                                    - List of resource ARNs that this statement
+                                    does not apply to. Conflicts with resources
+                                </li>
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >principals</code
+                                    >
+                                    - Configuration block for principals.
+                                    Detailed below
+                                </li>
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >not_principals</code
+                                    >
+                                    - Principals that the statement does not
+                                    apply to
+                                </li>
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >sid</code
+                                    >
+                                    - Statement ID to identify the policy
+                                    statement
+                                </li>
+                            </ul>
+
+                            <h5 style="color: #24292e; margin: 20px 0 10px">
+                                Principal Arguments
+                            </h5>
+                            <p style="margin-bottom: 10px">
+                                Required configuration for principal blocks:
+                            </p>
+                            <ul style="list-style-type: none; padding-left: 0">
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >type</code
+                                    >
+                                    (Required) - Type of principal (AWS,
+                                    Service, Federated, etc.)
+                                </li>
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >identifiers</code
+                                    >
+                                    (Required) - List of principal identifiers
+                                </li>
+                            </ul>
+
+                            <h5 style="color: #24292e; margin: 20px 0 10px">
+                                Condition Block
+                            </h5>
+                            <p style="margin-bottom: 10px">
+                                Multiple conditions use "AND" operation - all
+                                must be true. The following arguments are
+                                required:
+                            </p>
+                            <ul style="list-style-type: none; padding-left: 0">
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >test</code
+                                    >
+                                    - Name of the IAM condition operator to
+                                    evaluate
+                                </li>
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >variable</code
+                                    >
+                                    - Context Variable name (aws: prefix for AWS
+                                    variables, service-specific prefix for
+                                    others)
+                                </li>
+                                <li style="margin-bottom: 8px">
+                                    <code
+                                        style="
+                                            background: #f6f8fa;
+                                            padding: 2px 5px;
+                                        "
+                                        >values</code
+                                    >
+                                    - Values to evaluate against. Multiple
+                                    values use "OR" operation
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="tool-description">
-            <div class="description-container">
-                <div class="description-content">
-                    <p class="description-text">
-                        AWS IAM policies define permissions through the following elements:
-                    </p>
-                    <ul class="description-list">
-                        <li>
-                            <strong>Version</strong>
-                            <p>Specify the version of the policy language that you want to use. We recommend that you use the latest 2012-10-17 version. For more information, see IAM JSON policy elements: Version</p>
-                        </li>
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Converting policy...</p>
+        </div>
 
-                        <li>
-                            <strong>Statement</strong>
-                            <p>Use this main policy element as a container for the following elements. You can include more than one statement in a policy.</p>
-                        </li>
-
-                        <li>
-                            <strong>Sid <span style="color: #666; font-size: 0.9em; font-weight: normal;">(Optional)</span></strong>
-                            <p>Include an optional statement ID to differentiate between your statements.</p>
-                        </li>
-
-                        <li>
-                            <strong>Effect</strong>
-                            <p>Use Allow or Deny to indicate whether the policy allows or denies access.</p>
-                        </li>
-
-                        <li>
-                            <strong>Principal <span style="color: #666; font-size: 0.9em; font-weight: normal;">(Required in some circumstances)</span></strong>
-                            <p>If you create a resource-based policy, you must indicate the account, user, role, or federated user to which you would like to allow or deny access. If you are creating an IAM permissions policy to attach to a user or role, you cannot include this element. The principal is implied as that user or role.</p>
-                        </li>
-
-                        <li>
-                            <strong>Action</strong>
-                            <p>Include a list of actions that the policy allows or denies.</p>
-                        </li>
-
-                        <li>
-                            <strong>Resource <span style="color: #666; font-size: 0.9em; font-weight: normal;">(Required in some circumstances)</span></strong>
-                            <p>If you create an IAM permissions policy, you must specify a list of resources to which the actions apply. If you create a resource-based policy, it depends on the resource you're using as to whether this element is required or not.</p>
-                        </li>
-
-                        <li>
-                            <strong>Condition <span style="color: #666; font-size: 0.9em; font-weight: normal;">(Optional)</span></strong>
-                            <p>Specify the circumstances under which the policy grants permission.</p>
-                        </li>
-                    </ul>
-
-                    <!-- New section for pattern matching -->
-                    <div style="margin-top: 30px; padding-left: 16px; border-left: 3px solid #e1e4e8;">
-                        <h4 style="color: #24292e;">Pattern Matching in AWS Policies</h4>
-                        <p style="margin: 0; line-height: 1.6;">AWS IAM policies support pattern matching through glob-style wildcards and regex-like syntax:</p>
-                        
-                        <div style="margin-top: 15px;">
-                            <h5 style="color: #24292e; margin-bottom: 10px;">Resource Patterns:</h5>
-                            <ul style="list-style-type: none; padding-left: 0;">
-                                <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">*</code> - Matches any combination of characters</li>
-                                <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">?</code> - Matches exactly one character</li>
-                                <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">${...}</code> - Variable substitution (e.g., <code style="background: #f6f8fa; padding: 2px 5px;">${aws:username}</code>)</li>
-                                <li style="margin-bottom: 8px;">Example: <code style="background: #f6f8fa; padding: 2px 5px;">arn:aws:s3:::my-bucket/*</code> matches all objects in the bucket</li>
-                            </ul>
-                        </div>
-
-                        <div style="margin-top: 15px;">
-                            <h5 style="color: #24292e; margin-bottom: 10px;">Action Patterns:</h5>
-                            <ul style="list-style-type: none; padding-left: 0;">
-                                <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">service:*</code> - All actions in a service (e.g., <code style="background: #f6f8fa; padding: 2px 5px;">s3:*</code>)</li>
-                                <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">service:action*</code> - Actions with prefix (e.g., <code style="background: #f6f8fa; padding: 2px 5px;">iam:Get*</code>)</li>
-                                <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">service:*action</code> - Actions with suffix</li>
-                                <li style="margin-bottom: 8px;">Example: <code style="background: #f6f8fa; padding: 2px 5px;">iam:*Role*</code> matches CreateRole, DeleteRole, etc.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div style="margin-top: 30px; padding-left: 16px; border-left: 3px solid #e1e4e8;">
-                        <h4 style="color: #24292e;">Terraform aws_iam_policy_document Fields</h4>
-                        
-                        <h5 style="color: #24292e; margin: 15px 0 10px;">Top-level Arguments</h5>
-                        <ul style="list-style-type: none; padding-left: 0;">
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">policy_id</code> (Optional) - An ID for the policy document</li>
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">source_policy_documents</code> (Optional) - List of IAM policy documents that are merged together</li>
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">override_policy_documents</code> (Optional) - List of IAM policy documents that override others</li>
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">version</code> (Optional) - IAM policy version (2008-10-17 or 2012-10-17)</li>
-                        </ul>
-
-                        <h5 style="color: #24292e; margin: 20px 0 10px;">Statement Arguments</h5>
-                        <p style="margin-bottom: 10px;">The following arguments are optional:</p>
-                        <ul style="list-style-type: none; padding-left: 0;">
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">actions</code> - List of actions that this statement either allows or denies. For example, ["ec2:RunInstances", "s3:*"]</li>
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">effect</code> - Whether this statement allows or denies the given actions. Valid values are Allow and Deny</li>
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">not_actions</code> - List of actions that this statement does not apply to</li>
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">resources</code> - List of resource ARNs. Required for IAM policies. Conflicts with not_resources</li>
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">not_resources</code> - List of resource ARNs that this statement does not apply to. Conflicts with resources</li>
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">principals</code> - Configuration block for principals. Detailed below</li>
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">not_principals</code> - Principals that the statement does not apply to</li>
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">sid</code> - Statement ID to identify the policy statement</li>
-                        </ul>
-
-                        <h5 style="color: #24292e; margin: 20px 0 10px;">Principal Arguments</h5>
-                        <p style="margin-bottom: 10px;">Required configuration for principal blocks:</p>
-                        <ul style="list-style-type: none; padding-left: 0;">
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">type</code> (Required) - Type of principal (AWS, Service, Federated, etc.)</li>
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">identifiers</code> (Required) - List of principal identifiers</li>
-                        </ul>
-
-                        <h5 style="color: #24292e; margin: 20px 0 10px;">Condition Block</h5>
-                        <p style="margin-bottom: 10px;">Multiple conditions use "AND" operation - all must be true. The following arguments are required:</p>
-                        <ul style="list-style-type: none; padding-left: 0;">
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">test</code> - Name of the IAM condition operator to evaluate</li>
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">variable</code> - Context Variable name (aws: prefix for AWS variables, service-specific prefix for others)</li>
-                            <li style="margin-bottom: 8px;"><code style="background: #f6f8fa; padding: 2px 5px;">values</code> - Values to evaluate against. Multiple values use "OR" operation</li>
-                        </ul>
-                    </div>
-                </div>
+        <div class="notification error">
+            <div class="notification-content">
+                <span class="notification-icon">⚠️</span>
+                <span class="notification-message"></span>
+                <span class="notification-close">✕</span>
             </div>
         </div>
-    </div>
-    <div class="loading-spinner">
-        <div class="spinner"></div>
-        <p>Converting policy...</p>
-    </div>
 
-    <div class="notification error">
-        <div class="notification-content">
-            <span class="notification-icon">⚠️</span>
-            <span class="notification-message"></span>
-            <span class="notification-close">✕</span>
+        <div class="notification success">
+            <div class="notification-content">
+                <span class="notification-icon">✓</span>
+                <span class="notification-message"></span>
+                <span class="notification-close">✕</span>
+            </div>
         </div>
-    </div>
 
-    <div class="notification success">
-        <div class="notification-content">
-            <span class="notification-icon">✓</span>
-            <span class="notification-message"></span>
-            <span class="notification-close">✕</span>
-        </div>
-    </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/ruby/ruby.min.js"></script>
+        <script>
+            function showError(message) {
+                const notification =
+                    document.getElementById("errorNotification");
+                notification.textContent = message;
+                notification.classList.add("show");
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/ruby/ruby.min.js"></script>
-    <script>
-        function showError(message) {
-            const notification = document.getElementById('errorNotification');
-            notification.textContent = message;
-            notification.classList.add('show');
-
-            // Hide after 5 seconds
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 5000);
-        }
-
-        // Initialize CodeMirror editors
-        const inputEditor = CodeMirror.fromTextArea(document.getElementById('inputPolicy'), {
-            mode: { name: "javascript", json: true },
-            theme: "monokai",
-            lineNumbers: true,
-            autoCloseBrackets: true,
-            matchBrackets: true,
-            tabSize: 2,
-            indentWithTabs: false,
-            lineWrapping: true,
-            gutters: ["CodeMirror-linenumbers"],
-            extraKeys: {
-                "Ctrl-Space": "autocomplete"
+                // Hide after 5 seconds
+                setTimeout(() => {
+                    notification.classList.remove("show");
+                }, 5000);
             }
-        });
 
-        const policyDocEditor = CodeMirror.fromTextArea(document.getElementById('outputPolicyDoc'), {
-            mode: "ruby",  // Using Ruby mode for HCL as they have similar syntax
-            theme: "monokai",
-            lineNumbers: true,
-            readOnly: true,
-            tabSize: 2,
-            indentWithTabs: false,
-            lineWrapping: true,
-            gutters: ["CodeMirror-linenumbers"]
-        });
+            // Initialize CodeMirror editors
+            const inputEditor = CodeMirror.fromTextArea(
+                document.getElementById("inputPolicy"),
+                {
+                    mode: { name: "javascript", json: true },
+                    theme: "monokai",
+                    lineNumbers: true,
+                    autoCloseBrackets: true,
+                    matchBrackets: true,
+                    tabSize: 2,
+                    indentWithTabs: false,
+                    lineWrapping: true,
+                    gutters: ["CodeMirror-linenumbers"],
+                    extraKeys: {
+                        "Ctrl-Space": "autocomplete",
+                    },
+                },
+            );
 
-        const resourceEditor = CodeMirror.fromTextArea(document.getElementById('outputResource'), {
-            mode: "ruby",  // Using Ruby mode for HCL as they have similar syntax
-            theme: "monokai",
-            lineNumbers: true,
-            readOnly: true,
-            tabSize: 2,
-            indentWithTabs: false,
-            lineWrapping: true,
-            gutters: ["CodeMirror-linenumbers"]
-        });
+            const policyDocEditor = CodeMirror.fromTextArea(
+                document.getElementById("outputPolicyDoc"),
+                {
+                    mode: "ruby", // Using Ruby mode for HCL as they have similar syntax
+                    theme: "monokai",
+                    lineNumbers: true,
+                    readOnly: true,
+                    tabSize: 2,
+                    indentWithTabs: false,
+                    lineWrapping: true,
+                    gutters: ["CodeMirror-linenumbers"],
+                },
+            );
 
-        // Helper functions
-        function pluralize(word) {
-            if (word === 'Resource' || word === 'Action') return word + 's';
-            return word;
-        }
+            const resourceEditor = CodeMirror.fromTextArea(
+                document.getElementById("outputResource"),
+                {
+                    mode: "ruby", // Using Ruby mode for HCL as they have similar syntax
+                    theme: "monokai",
+                    lineNumbers: true,
+                    readOnly: true,
+                    tabSize: 2,
+                    indentWithTabs: false,
+                    lineWrapping: true,
+                    gutters: ["CodeMirror-linenumbers"],
+                },
+            );
 
-        function formatArrayValue(values, indentLevel = 6) {
-            const indent = ' '.repeat(indentLevel);
-            if (!Array.isArray(values)) {
-                return `["${values}"]`;
+            // Helper functions
+            function pluralize(word) {
+                if (word === "Resource" || word === "Action") return word + "s";
+                return word;
             }
-            if (values.length === 1) {
-                return `["${values[0]}"]`;
-            }
-            return `[\n${indent}  "${values.join(`",\n${indent}  "`)}"    \n${indent}]`;
-        }
 
-        function formatHcl(input) {
-            return input.replace(/}/g, '}\n')
-                       .replace(/{/g, '{\n  ')
-                       .replace(/\n\s*\n/g, '\n');
-        }
-
-        function convertStatementToHCL(stmt, forPolicyDoc = false) {
-            const indent = forPolicyDoc ? '    ' : '        ';
-            let block = forPolicyDoc ? '  statement {\n' : '      {\n';
-
-            // Define fields that should be treated as strings
-            const stringFields = ['Sid', 'Effect'];
-
-            Object.entries(stmt).forEach(([key, value]) => {
-                if (key === 'Condition' || key === 'Principal' || key === 'NotPrincipal') {
-                    return; // Skip these, they are handled later
+            function formatArrayValue(values, indentLevel = 6) {
+                const indent = " ".repeat(indentLevel);
+                if (!Array.isArray(values)) {
+                    return `["${values}"]`;
                 }
+                if (values.length === 1) {
+                    return `["${values[0]}"]`;
+                }
+                return `[\n${indent}  "${values.join(`",\n${indent}  "`)}"    \n${indent}]`;
+            }
 
-                const fieldName = forPolicyDoc ? pluralize(key).toLowerCase() : key;
-                const isResourceOrActionType = ['Resource', 'NotResource', 'Action', 'NotAction'].includes(key);
+            function formatHcl(input) {
+                return input
+                    .replace(/}/g, "}\n")
+                    .replace(/{/g, "{\n  ")
+                    .replace(/\n\s*\n/g, "\n");
+            }
 
-                if (stringFields.includes(key)) { // Sid, Effect
-                    block += `${indent}${fieldName} = "${value}"\n`;
-                } else if (isResourceOrActionType) {
-                    if (Array.isArray(value)) {
-                        block += `${indent}${fieldName} = ${formatArrayValue(value, indent.length)}\n`;
-                    } else { // Value is a string
-                        if (forPolicyDoc) {
-                            // For policy doc, these fields always expect a list
-                            block += `${indent}${fieldName} = ${formatArrayValue([value], indent.length)}\n`;
+            function convertStatementToHCL(stmt, forPolicyDoc = false) {
+                const indent = forPolicyDoc ? "    " : "        ";
+                let block = forPolicyDoc ? "  statement {\n" : "      {\n";
+
+                // Define fields that should be treated as strings
+                const stringFields = ["Sid", "Effect"];
+
+                Object.entries(stmt).forEach(([key, value]) => {
+                    if (
+                        key === "Condition" ||
+                        key === "Principal" ||
+                        key === "NotPrincipal"
+                    ) {
+                        return; // Skip these, they are handled later
+                    }
+
+                    const fieldName = forPolicyDoc
+                        ? pluralize(key).toLowerCase()
+                        : key;
+                    const isResourceOrActionType = [
+                        "Resource",
+                        "NotResource",
+                        "Action",
+                        "NotAction",
+                    ].includes(key);
+
+                    if (stringFields.includes(key)) {
+                        // Sid, Effect
+                        block += `${indent}${fieldName} = "${value}"\n`;
+                    } else if (isResourceOrActionType) {
+                        if (Array.isArray(value)) {
+                            block += `${indent}${fieldName} = ${formatArrayValue(value, indent.length)}\n`;
                         } else {
-                            // For resource HCL, it's a direct string assignment
-                            block += `${indent}${fieldName} = "${value}"\n`;
+                            // Value is a string
+                            if (forPolicyDoc) {
+                                // For policy doc, these fields always expect a list
+                                block += `${indent}${fieldName} = ${formatArrayValue([value], indent.length)}\n`;
+                            } else {
+                                // For resource HCL, it's a direct string assignment
+                                block += `${indent}${fieldName} = "${value}"\n`;
+                            }
                         }
-                    }
-                } else if (Array.isArray(value)) { // Handles any other potential array types
-                    block += `${indent}${fieldName} = ${formatArrayValue(value, indent.length)}\n`;
-                } else { 
-                    // Fallback for any other string type fields not explicitly handled,
-                    // though most policy fields are either string or array or structured objects.
-                    // This might need adjustment if other specific string fields exist.
-                    block += `${indent}${fieldName} = "${value}"\n`;
-                }
-            });
-
-            // Handle Principal/NotPrincipal specially
-            ['Principal', 'NotPrincipal'].forEach(principalType => {
-                if (stmt[principalType]) {
-                    const fieldName = forPolicyDoc ? principalType.toLowerCase() : principalType;
-                    if (typeof stmt[principalType] === 'string') {
-                        // Handle string principal
-                        block += `${indent}${fieldName} = "${stmt[principalType]}"\n`;
+                    } else if (Array.isArray(value)) {
+                        // Handles any other potential array types
+                        block += `${indent}${fieldName} = ${formatArrayValue(value, indent.length)}\n`;
                     } else {
-                        // Handle object principal (e.g., {"AWS": ["arn:aws:iam::123456789012:root"]})
-                        block += `${indent}${fieldName} = {\n`;
-                        Object.entries(stmt[principalType]).forEach(([service, ids]) => {
-                            const serviceIds = Array.isArray(ids) ? ids : [ids];
-                            block += `${indent}  ${service} = ${formatArrayValue(serviceIds, indent.length + 2)}\n`;
-                        });
-                        block += `${indent}}\n`;
-                    }
-                }
-            });
-
-            // Handle Condition separately due to its nested structure
-            if (stmt.Condition) {
-                if (forPolicyDoc) {
-                    // Policy document format
-                    for (const [operator, conditions] of Object.entries(stmt.Condition)) {
-                        for (const [key, values] of Object.entries(conditions)) {
-                            block += `${indent}condition {\n`;
-                            block += `${indent}  test     = "${operator}"\n`;
-                            block += `${indent}  variable = "${key}"\n`;
-                            block += `${indent}  values   = ${formatArrayValue(values, indent.length + 2)}\n`;
-                            block += `${indent}}\n`;
-                        }
-                    }
-                } else {
-                    // Resource format
-                    block += `${indent}Condition = {\n`;
-                    for (const [operator, conditions] of Object.entries(stmt.Condition)) {
-                        block += `${indent}  ${operator} = {\n`;
-                        for (const [key, values] of Object.entries(conditions)) {
-                            block += `${indent}    "${key}" = ${formatArrayValue(values, indent.length + 4)}\n`;
-                        }
-                        block += `${indent}  }\n`;
-                    }
-                    block += `${indent}}\n`;
-                }
-            }
-
-            block += forPolicyDoc ? '  }' : '      }';
-            return block;
-        }
-
-        function convertToHCL(policyJson) {
-            try {
-                const policy = JSON.parse(policyJson);
-
-                if (!policy.Version) {
-                    throw new Error("Policy must include a 'Version' field");
-                }
-
-                if (!policy.Statement || !Array.isArray(policy.Statement)) {
-                    throw new Error("Policy must include a 'Statement' array");
-                }
-
-                // Validate each statement
-                policy.Statement.forEach((stmt, index) => {
-                    if (!stmt.Effect || !['Allow', 'Deny'].includes(stmt.Effect)) {
-                        throw new Error(`Statement ${index + 1} must include a valid 'Effect' field (Allow or Deny)`);
-                    }
-                    if (!stmt.Action && !stmt.Resource && !stmt.NotAction && !stmt.NotResource) {
-                        throw new Error(`Statement ${index + 1} must include at least one of 'Action', 'NotAction', 'Resource', or 'NotResource' fields`);
+                        // Fallback for any other string type fields not explicitly handled,
+                        // though most policy fields are either string or array or structured objects.
+                        // This might need adjustment if other specific string fields exist.
+                        block += `${indent}${fieldName} = "${value}"\n`;
                     }
                 });
 
-                const statements = policy.Statement;
+                // Handle Principal/NotPrincipal specially
+                ["Principal", "NotPrincipal"].forEach((principalType) => {
+                    if (stmt[principalType]) {
+                        const fieldName = forPolicyDoc
+                            ? principalType.toLowerCase()
+                            : principalType;
+                        if (typeof stmt[principalType] === "string") {
+                            // Handle string principal
+                            block += `${indent}${fieldName} = "${stmt[principalType]}"\n`;
+                        } else {
+                            // Handle object principal (e.g., {"AWS": ["arn:aws:iam::123456789012:root"]})
+                            block += `${indent}${fieldName} = {\n`;
+                            Object.entries(stmt[principalType]).forEach(
+                                ([service, ids]) => {
+                                    const serviceIds = Array.isArray(ids)
+                                        ? ids
+                                        : [ids];
+                                    block += `${indent}  ${service} = ${formatArrayValue(serviceIds, indent.length + 2)}\n`;
+                                },
+                            );
+                            block += `${indent}}\n`;
+                        }
+                    }
+                });
 
-                // Generate policy document version
-                const statementBlocks = statements.map(stmt => convertStatementToHCL(stmt, true)).join('\n\n');
-                const policyDocVersion = `data "aws_iam_policy_document" "policy" {
+                // Handle Condition separately due to its nested structure
+                if (stmt.Condition) {
+                    if (forPolicyDoc) {
+                        // Policy document format
+                        for (const [operator, conditions] of Object.entries(
+                            stmt.Condition,
+                        )) {
+                            for (const [key, values] of Object.entries(
+                                conditions,
+                            )) {
+                                block += `${indent}condition {\n`;
+                                block += `${indent}  test     = "${operator}"\n`;
+                                block += `${indent}  variable = "${key}"\n`;
+                                block += `${indent}  values   = ${formatArrayValue(values, indent.length + 2)}\n`;
+                                block += `${indent}}\n`;
+                            }
+                        }
+                    } else {
+                        // Resource format
+                        block += `${indent}Condition = {\n`;
+                        for (const [operator, conditions] of Object.entries(
+                            stmt.Condition,
+                        )) {
+                            block += `${indent}  ${operator} = {\n`;
+                            for (const [key, values] of Object.entries(
+                                conditions,
+                            )) {
+                                block += `${indent}    "${key}" = ${formatArrayValue(values, indent.length + 4)}\n`;
+                            }
+                            block += `${indent}  }\n`;
+                        }
+                        block += `${indent}}\n`;
+                    }
+                }
+
+                block += forPolicyDoc ? "  }" : "      }";
+                return block;
+            }
+
+            function convertToHCL(policyJson) {
+                try {
+                    const policy = JSON.parse(policyJson);
+
+                    if (!policy.Version) {
+                        throw new Error(
+                            "Policy must include a 'Version' field",
+                        );
+                    }
+
+                    if (!policy.Statement || !Array.isArray(policy.Statement)) {
+                        throw new Error(
+                            "Policy must include a 'Statement' array",
+                        );
+                    }
+
+                    // Validate each statement
+                    policy.Statement.forEach((stmt, index) => {
+                        if (
+                            !stmt.Effect ||
+                            !["Allow", "Deny"].includes(stmt.Effect)
+                        ) {
+                            throw new Error(
+                                `Statement ${index + 1} must include a valid 'Effect' field (Allow or Deny)`,
+                            );
+                        }
+                        if (
+                            !stmt.Action &&
+                            !stmt.Resource &&
+                            !stmt.NotAction &&
+                            !stmt.NotResource
+                        ) {
+                            throw new Error(
+                                `Statement ${index + 1} must include at least one of 'Action', 'NotAction', 'Resource', or 'NotResource' fields`,
+                            );
+                        }
+                    });
+
+                    const statements = policy.Statement;
+
+                    // Generate policy document version
+                    const statementBlocks = statements
+                        .map((stmt) => convertStatementToHCL(stmt, true))
+                        .join("\n\n");
+                    const policyDocVersion = `data "aws_iam_policy_document" "policy" {
 ${statementBlocks}
 }`;
 
-                // Generate resource version
-                const resourceStatements = statements.map(stmt => convertStatementToHCL(stmt, false)).join(',\n');
-                const jsonEncodeVersion = `resource "aws_iam_policy" "policy" {
+                    // Generate resource version
+                    const resourceStatements = statements
+                        .map((stmt) => convertStatementToHCL(stmt, false))
+                        .join(",\n");
+                    const jsonEncodeVersion = `resource "aws_iam_policy" "policy" {
   name        = "policy-name"
   description = "Policy Description"
   policy      = jsonencode({
@@ -1030,111 +1636,144 @@ ${resourceStatements}
   })
 }`;
 
-                return { policyDocVersion, jsonEncodeVersion };
-            } catch (error) {
-                return `Error converting policy: ${error.message}`;
-            }
-        }
-
-        // Auto-format JSON
-        function formatJson(input) {
-            try {
-                const parsed = JSON.parse(input);
-                return JSON.stringify(parsed, null, 2);
-            } catch {
-                return input;
-            }
-        }
-
-        document.getElementById('convertBtn').addEventListener('click', async () => {
-            try {
-                const loadingSpinner = document.querySelector('.loading-spinner');
-                loadingSpinner.classList.add('active');
-
-                const inputPolicy = inputEditor.getValue();
-                
-                // Validate JSON
-                try {
-                    JSON.parse(inputPolicy);
-                } catch (e) {
-                    throw new Error('Invalid JSON format. Please check your input.');
+                    return { policyDocVersion, jsonEncodeVersion };
+                } catch (error) {
+                    return `Error converting policy: ${error.message}`;
                 }
-
-                // Convert policy (existing conversion logic)
-                const policyDoc = convertToHCL(inputPolicy);
-                const resource = policyDoc.jsonEncodeVersion;
-
-                policyDocEditor.setValue(policyDoc.policyDocVersion);
-                resourceEditor.setValue(resource);
-
-                const successNotification = document.querySelector('.notification.success');
-                successNotification.querySelector('.notification-message').textContent = 'Policy converted successfully!';
-                successNotification.classList.add('active');
-
-                // Hide after 5 seconds
-                setTimeout(() => {
-                    successNotification.classList.remove('active');
-                }, 5000);
-            } catch (error) {
-                const errorNotification = document.querySelector('.notification.error');
-                errorNotification.querySelector('.notification-message').textContent = error.message;
-                errorNotification.classList.add('active');
-
-                // Hide after 5 seconds
-                setTimeout(() => {
-                    errorNotification.classList.remove('active');
-                }, 5000);
-            } finally {
-                const loadingSpinner = document.querySelector('.loading-spinner');
-                loadingSpinner.classList.remove('active');
             }
-        });
 
-        document.getElementById('copyPolicyDocBtn').addEventListener('click', () => {
-            navigator.clipboard.writeText(policyDocEditor.getValue());
-            const copyBtn = document.getElementById('copyPolicyDocBtn');
-            copyBtn.textContent = 'Copied!';
-            copyBtn.classList.add('copied');
-            setTimeout(() => {
-                copyBtn.textContent = 'Copy Policy Doc';
-                copyBtn.classList.remove('copied');
-            }, 2000);
-        });
-
-        document.getElementById('copyResourceBtn').addEventListener('click', () => {
-            navigator.clipboard.writeText(resourceEditor.getValue());
-            const copyBtn = document.getElementById('copyResourceBtn');
-            copyBtn.textContent = 'Copied!';
-            copyBtn.classList.add('copied');
-            setTimeout(() => {
-                copyBtn.textContent = 'Copy Resource';
-                copyBtn.classList.remove('copied');
-            }, 2000);
-        });
-
-        // Auto-format JSON input when pasted
-        inputEditor.on('change', (cm, change) => {
-            if (change.origin === 'paste') {
-                const formatted = formatJson(cm.getValue());
-                cm.setValue(formatted);
+            // Auto-format JSON
+            function formatJson(input) {
+                try {
+                    const parsed = JSON.parse(input);
+                    return JSON.stringify(parsed, null, 2);
+                } catch {
+                    return input;
+                }
             }
-        });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <footer class="site-footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-links">
-                    <a href="privacy-policy.html">Privacy Policy</a>
-                    <a href="terms.html">Terms of Service</a>
-                    <a href="https://akarat.xyz">About Me</a>
-                    <a href="https://github.com/bohrasd" target="_blank" rel="noopener noreferrer">GitHub</a>
-                    <a href="https://twitter.com/leoric_ring" target="_blank" rel="noopener noreferrer">Twitter</a>
-                    <a href="https://www.linkedin.com/in/bohr-%E5%BC%A0%E5%93%B2%E6%BA%90-72604484/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+
+            document
+                .getElementById("convertBtn")
+                .addEventListener("click", async () => {
+                    try {
+                        const loadingSpinner =
+                            document.querySelector(".loading-spinner");
+                        loadingSpinner.classList.add("active");
+
+                        const inputPolicy = inputEditor.getValue();
+
+                        // Validate JSON
+                        try {
+                            JSON.parse(inputPolicy);
+                        } catch (e) {
+                            throw new Error(
+                                "Invalid JSON format. Please check your input.",
+                            );
+                        }
+
+                        // Convert policy (existing conversion logic)
+                        const policyDoc = convertToHCL(inputPolicy);
+                        const resource = policyDoc.jsonEncodeVersion;
+
+                        policyDocEditor.setValue(policyDoc.policyDocVersion);
+                        resourceEditor.setValue(resource);
+
+                        const successNotification = document.querySelector(
+                            ".notification.success",
+                        );
+                        successNotification.querySelector(
+                            ".notification-message",
+                        ).textContent = "Policy converted successfully!";
+                        successNotification.classList.add("active");
+
+                        // Hide after 5 seconds
+                        setTimeout(() => {
+                            successNotification.classList.remove("active");
+                        }, 5000);
+                    } catch (error) {
+                        const errorNotification = document.querySelector(
+                            ".notification.error",
+                        );
+                        errorNotification.querySelector(
+                            ".notification-message",
+                        ).textContent = error.message;
+                        errorNotification.classList.add("active");
+
+                        // Hide after 5 seconds
+                        setTimeout(() => {
+                            errorNotification.classList.remove("active");
+                        }, 5000);
+                    } finally {
+                        const loadingSpinner =
+                            document.querySelector(".loading-spinner");
+                        loadingSpinner.classList.remove("active");
+                    }
+                });
+
+            document
+                .getElementById("copyPolicyDocBtn")
+                .addEventListener("click", () => {
+                    navigator.clipboard.writeText(policyDocEditor.getValue());
+                    const copyBtn = document.getElementById("copyPolicyDocBtn");
+                    copyBtn.textContent = "Copied!";
+                    copyBtn.classList.add("copied");
+                    setTimeout(() => {
+                        copyBtn.textContent = "Copy Policy Doc";
+                        copyBtn.classList.remove("copied");
+                    }, 2000);
+                });
+
+            document
+                .getElementById("copyResourceBtn")
+                .addEventListener("click", () => {
+                    navigator.clipboard.writeText(resourceEditor.getValue());
+                    const copyBtn = document.getElementById("copyResourceBtn");
+                    copyBtn.textContent = "Copied!";
+                    copyBtn.classList.add("copied");
+                    setTimeout(() => {
+                        copyBtn.textContent = "Copy Resource";
+                        copyBtn.classList.remove("copied");
+                    }, 2000);
+                });
+
+            // Auto-format JSON input when pasted
+            inputEditor.on("change", (cm, change) => {
+                if (change.origin === "paste") {
+                    const formatted = formatJson(cm.getValue());
+                    cm.setValue(formatted);
+                }
+            });
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <footer class="site-footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-links">
+                        <a href="privacy-policy.html">Privacy Policy</a>
+                        <a href="terms.html">Terms of Service</a>
+                        <a href="https://akarat.xyz">About Me</a>
+                        <a
+                            href="https://github.com/bohrasd"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >GitHub</a
+                        >
+                        <a
+                            href="https://twitter.com/leoric_ring"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >Twitter</a
+                        >
+                        <a
+                            href="https://www.linkedin.com/in/bohr-%E5%BC%A0%E5%93%B2%E6%BA%90-72604484/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >LinkedIn</a
+                        >
+                    </div>
+                    <p>&copy; 2024 Akarat Tools. All rights reserved.</p>
                 </div>
-                <p>&copy; 2024 Akarat Tools. All rights reserved.</p>
             </div>
-        </div>
-    </footer>
-</body>
+        </footer>
+    </body>
 </html>
